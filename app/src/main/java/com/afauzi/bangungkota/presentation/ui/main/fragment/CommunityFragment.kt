@@ -1,4 +1,4 @@
-package com.afauzi.bangungkota.ui.main.fragment
+package com.afauzi.bangungkota.presentation.ui.main.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

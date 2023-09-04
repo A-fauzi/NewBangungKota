@@ -1,4 +1,4 @@
-package com.afauzi.bangungkota.ui.main.fragment
+package com.afauzi.bangungkota.presentation.ui.main.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.afauzi.bangungkota.R
 
-class MapsFragment : Fragment() {
+class AccountFragment : Fragment() {
 
 
     override fun onCreateView(
@@ -15,7 +15,7 @@ class MapsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_maps, container, false)
+        return inflater.inflate(R.layout.fragment_account, container, false)
     }
 
     

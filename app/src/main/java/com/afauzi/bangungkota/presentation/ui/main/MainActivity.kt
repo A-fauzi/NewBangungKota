@@ -1,4 +1,4 @@
-package com.afauzi.bangungkota.ui.main
+package com.afauzi.bangungkota.presentation.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
