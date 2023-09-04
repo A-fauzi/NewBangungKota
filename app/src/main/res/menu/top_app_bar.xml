@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/user"
+        android:title="@string/user"
+        android:contentDescription="@string/user"
+        android:icon="@drawable/circle_user_filled"
+        app:showAsAction="ifRoom" />
+
+</menu>
