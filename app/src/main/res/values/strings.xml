@@ -5,4 +5,8 @@
     <string name="user">User</string>
     <string name="lorem">In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.</string>
     <string name="your_web_client_id">470355599725-n00mqdtaugkbfffeah89ancna0kp4cv1.apps.googleusercontent.com</string>
+    <string name="choose_location">Choose Location</string>
+    <string name="set_data_event">Set Date Event</string>
+    <string name="set_time_event">Set Time Event</string>
+    <string name="event_name">Event Name</string>
 </resources>
