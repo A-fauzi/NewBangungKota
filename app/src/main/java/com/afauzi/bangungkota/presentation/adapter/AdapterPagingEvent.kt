@@ -1,4 +1,4 @@
-package com.afauzi.bangungkota.presentation.ui.adapter
+package com.afauzi.bangungkota.presentation.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -10,7 +10,9 @@ import com.afauzi.bangungkota.databinding.ComponentListEventBinding
 import com.afauzi.bangungkota.domain.model.Event
 import com.bumptech.glide.Glide
 
-class AdapterPagingEvent(private val context: Context): PagingDataAdapter<Event, AdapterPagingEvent.EventViewHolder>(EventDiffCallback) {
+class AdapterPagingEvent(private val context: Context): PagingDataAdapter<Event, AdapterPagingEvent.EventViewHolder>(
+    EventDiffCallback
+) {
 
     inner class EventViewHolder(private val binding: ComponentListEventBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: Event) {

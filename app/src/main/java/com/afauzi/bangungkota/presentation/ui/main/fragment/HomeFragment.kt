@@ -1,5 +1,6 @@
 package com.afauzi.bangungkota.presentation.ui.main.fragment
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -16,7 +17,8 @@ import androidx.paging.LoadState
 import androidx.paging.map
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.FragmentHomeBinding
-import com.afauzi.bangungkota.presentation.ui.adapter.AdapterPagingEvent
+import com.afauzi.bangungkota.presentation.adapter.AdapterPagingEvent
+import com.afauzi.bangungkota.presentation.ui.event.CreateEventActivity
 import com.afauzi.bangungkota.presentation.viewmodels.AuthViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.EventViewModel
 import com.afauzi.bangungkota.utils.CustomViews
@@ -60,6 +62,9 @@ class HomeFragment : Fragment() {
 
         binding.rvEvent.apply {
             adapter = adapterPagingEvent
+        }
+        binding.fabCreateEvent.setOnClickListener {
+            startActivity(Intent(requireActivity(), CreateEventActivity::class.java))
         }
     }
 
