@@ -21,7 +21,9 @@ class AuthRepositoryImpl: AuthRepository {
                     val uid = firebaseUser.uid
                     val name = firebaseUser.displayName
                     val email = firebaseUser.email
-                    val user = User(uid = uid, name = name.toString(), email = email.toString())
+                    val photo = firebaseUser.photoUrl
+                    val phoneNumber = firebaseUser.phoneNumber
+                    val user = User(uid = uid, name = name.toString(), email = email.toString(), photo = photo.toString(), phoneNumber = phoneNumber.toString())
                     user.isNew = isNewUser
                     authenticatedUserMutableLiveData.value = ResponseState.Success(user)
                 }
