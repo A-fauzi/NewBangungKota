@@ -1,4 +1,4 @@
-package com.afauzi.bangungkota.data.remote.firebase
+package com.afauzi.bangungkota.data.repository.event
 
 import android.util.Log
 import androidx.paging.PagingSource
@@ -21,14 +21,14 @@ class EventPagingSource: PagingSource<QuerySnapshot, Event>() {
     override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Event> {
         return try {
             val currentPage = params.key ?: db.collection("events")
-                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .orderBy("createdAt")
                 .limit(params.loadSize.toLong())
                 .get()
                 .await()
 
             val lastDocumentSnapshot = currentPage.documents.lastOrNull()
             val nextPage = db.collection("events")
-                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .orderBy("createdAt")
                 .startAfter(lastDocumentSnapshot)
                 .limit(params.loadSize.toLong())
                 .get()

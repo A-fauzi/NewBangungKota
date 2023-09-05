@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityCreateEventBinding
 import com.afauzi.bangungkota.domain.model.Event
 import com.afauzi.bangungkota.presentation.ui.main.MainActivity
+import com.afauzi.bangungkota.presentation.viewmodels.EventViewModel
 import com.afauzi.bangungkota.utils.Constant
 import com.afauzi.bangungkota.utils.Constant.RC_IMAGE_GALLERY
 import com.afauzi.bangungkota.utils.CustomViews
@@ -31,6 +33,8 @@ class CreateEventActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateEventBinding
     private lateinit var filePathImageGallery: Uri
+
+    private val eventViewModel: EventViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,7 +103,7 @@ class CreateEventActivity : AppCompatActivity() {
                 binding.progressbar.visibility = View.VISIBLE
                 enabledStateForm(false)
 
-                uploadMediaAndData(filePathImageGallery, data) { isSuccessfullyTransactionDb ->
+                eventViewModel.createEvent(filePathImageGallery, data) { isSuccessfullyTransactionDb ->
                     if (isSuccessfullyTransactionDb)  {
                         val intent = Intent(this@CreateEventActivity, MainActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -182,55 +186,5 @@ class CreateEventActivity : AppCompatActivity() {
         binding.eventDate.editTextCreateEvent.isEnabled = false
 
     }
-
-    fun uploadMediaToStorage(uri: Uri, onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit) {
-        val storageRef = FirebaseStorage.getInstance().reference
-        val fileName = UUID.randomUUID()
-        val mediaRef = storageRef.child("/event/${fileName}.jpg") // Ganti dengan nama yang sesuai
-
-        mediaRef.putFile(uri)
-            .addOnSuccessListener {
-                mediaRef.downloadUrl.addOnSuccessListener { uri ->
-                    onSuccess(uri.toString())
-                }.addOnFailureListener {
-                    onFailure(it)
-                }
-            }
-            .addOnFailureListener {
-                onFailure(it)
-            }
-    }
-
-    fun uploadDataToFirestore(data: Event, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("events").document(data.id) // Ganti dengan nama yang sesuai
-
-        db.runTransaction { transaction ->
-            transaction.set(docRef, data)
-            null // Transaksi berhasil, kembalikan null
-        }
-            .addOnSuccessListener {
-                onSuccess()
-            }
-            .addOnFailureListener {
-                onFailure(it)
-            }
-    }
-
-    fun uploadMediaAndData(uri: Uri, data: Event, onComplete: (Boolean) -> Unit) {
-
-        uploadMediaToStorage(uri, { mediaUrl ->
-            data.image = mediaUrl // Menghubungkan URL media dengan data Firestore
-            uploadDataToFirestore(data, {
-                onComplete(true) // Keduanya berhasil
-            }, {
-                onComplete(false) // Salah satu operasi gagal
-            })
-        }, {
-            onComplete(false) // Salah satu operasi gagal
-        })
-    }
-
-
 
 }
