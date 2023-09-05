@@ -1,10 +1,15 @@
 package com.afauzi.bangungkota.domain.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date
 
+@Entity(tableName = "events")
 data class Event(
+
+    @PrimaryKey
     val id: String = "",
     val title: String = "",
     val description: String = "",

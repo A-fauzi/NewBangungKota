@@ -39,7 +39,7 @@ class EventPagingSource: PagingSource<QuerySnapshot, Event>() {
             Log.d("EventDataSource", events.toString())
 
             LoadResult.Page(
-                data = events,
+                data = events.reversed(),
                 prevKey = null,
                 nextKey = if (nextPage.isEmpty) null else nextPage
             )
