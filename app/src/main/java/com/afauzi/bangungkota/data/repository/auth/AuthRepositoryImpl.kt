@@ -10,7 +10,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class AuthRepositoryImpl: AuthRepository {
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val rootRef: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     override fun signInWithGoogle(googleAuthCredential: AuthCredential): MutableLiveData<ResponseState<User>> {
         val authenticatedUserMutableLiveData: MutableLiveData<ResponseState<User>> = MutableLiveData()

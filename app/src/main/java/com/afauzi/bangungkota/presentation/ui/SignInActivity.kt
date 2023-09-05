@@ -14,6 +14,7 @@ import com.afauzi.bangungkota.databinding.ActivitySignInBinding
 import com.afauzi.bangungkota.domain.state.ResponseState
 import com.afauzi.bangungkota.presentation.ui.main.MainActivity
 import com.afauzi.bangungkota.presentation.viewmodels.AuthViewModel
+import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.afauzi.bangungkota.utils.Constant
 import com.afauzi.bangungkota.utils.Constant.LOG_TAG
 import com.afauzi.bangungkota.utils.Constant.RC_SIGN_IN
@@ -39,6 +40,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
 
     private val authViewModel: AuthViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,6 +122,17 @@ class SignInActivity : AppCompatActivity() {
                     if (authenticatedUser.data != null){
                         //update ui
                         toast(this, "Hi ${authenticatedUser.data.name}")
+                        userViewModel.saveData(authenticatedUser.data.uid, authenticatedUser.data)
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    toast(this, "data kamu disimpan di database!")
+                                } else {
+                                    toast(this, "data kamu gagal disimpan di database!")
+                                }
+                            }
+                            .addOnFailureListener {
+                                toast(this, "Error save data user: Error -> ${it.message}")
+                            }
                     } else {
                         toast(this, "data null")
                     }

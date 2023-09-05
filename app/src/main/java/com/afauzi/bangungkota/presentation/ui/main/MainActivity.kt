@@ -7,6 +7,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityMainBinding
+import com.afauzi.bangungkota.utils.CustomViews
+import com.afauzi.bangungkota.utils.CustomViews.toast
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
