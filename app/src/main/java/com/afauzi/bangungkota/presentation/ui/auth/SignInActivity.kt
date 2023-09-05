@@ -1,14 +1,10 @@
-package com.afauzi.bangungkota.presentation.ui
+package com.afauzi.bangungkota.presentation.ui.auth
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivitySignInBinding
 import com.afauzi.bangungkota.domain.model.User
@@ -16,23 +12,15 @@ import com.afauzi.bangungkota.domain.state.ResponseState
 import com.afauzi.bangungkota.presentation.ui.main.MainActivity
 import com.afauzi.bangungkota.presentation.viewmodels.AuthViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
-import com.afauzi.bangungkota.utils.Constant
-import com.afauzi.bangungkota.utils.Constant.LOG_TAG
 import com.afauzi.bangungkota.utils.Constant.RC_SIGN_IN
-import com.afauzi.bangungkota.utils.CustomViews
 import com.afauzi.bangungkota.utils.CustomViews.toast
-import com.cuneytayyildiz.onboarder.utils.visible
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

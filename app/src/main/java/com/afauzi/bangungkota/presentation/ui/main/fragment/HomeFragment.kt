@@ -4,25 +4,42 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.map
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.FragmentHomeBinding
+import com.afauzi.bangungkota.presentation.ui.adapter.AdapterPagingEvent
 import com.afauzi.bangungkota.presentation.viewmodels.AuthViewModel
+import com.afauzi.bangungkota.presentation.viewmodels.EventViewModel
 import com.afauzi.bangungkota.utils.CustomViews
 import com.afauzi.bangungkota.utils.CustomViews.toast
+import com.afauzi.bangungkota.utils.UtilityLibrary
+import com.afauzi.bangungkota.utils.UtilityLibrary.currentDate
+import com.afauzi.bangungkota.utils.UtilityLibrary.imageGlideForCircle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var adapterPagingEvent: AdapterPagingEvent
+
+    private val eventViewModel: EventViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,38 +47,50 @@ class HomeFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
+        adapterPagingEvent = AdapterPagingEvent(requireActivity())
         return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setDataToViews()
+
+        lifecycleScope.launch {
+            eventViewModel.getEvents.collectLatest { pagingData ->
+                adapterPagingEvent.submitData(pagingData)
+            }
+        }
+
+        lifecycleScope.launch {
+            adapterPagingEvent.loadStateFlow.distinctUntilChangedBy {
+                it.refresh
+            }.collect {
+                //you get all the data here
+                val list = adapterPagingEvent.snapshot()
+                if (list.isEmpty()) Log.d("HomeFragment", "Kosong") else Log.d("HomeFragment", "data ada")
+            }
+        }
     }
 
     private fun setDataToViews() {
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
 
+        // SET DATA TOOLBAR
         binding.appBarLayout.topAppBar.title = "Hi ${user?.displayName} 🙌"
-        Glide.with(this)
-            .asBitmap()
-            .load(user?.photoUrl.toString())
-            .apply(RequestOptions.circleCropTransform())
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val iconDrawable = BitmapDrawable(resources, resource)
-                    binding.appBarLayout.topAppBar.menu.findItem(R.id.user).icon = iconDrawable
-                }
+        imageGlideForCircle(
+            context = requireActivity(),
+            dataImg = user?.photoUrl.toString(),
+            res = resources
+        ) { bitmap ->
+            binding.appBarLayout.topAppBar.menu.findItem(R.id.user).icon = bitmap
+        }
 
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // this is called when imageView is cleared on lifecycle call or for
-                    // some other reason.
-                    // if you are referencing the bitmap somewhere else too other than this imageView
-                    // clear it here as you can no longer have the bitmap
-                }
+        binding.currentDate.text = currentDate()
 
-            })
+
+
+
     }
 }
