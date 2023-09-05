@@ -3,6 +3,7 @@ package com.afauzi.bangungkota.presentation.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,9 @@ class AdapterPagingEvent(private val context: Context): PagingDataAdapter<Event,
             Glide.with(context)
                 .load(event.image)
                 .into(binding.itemImage)
+            binding.cvItem.setOnClickListener {
+                Toast.makeText(context, event.title, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
