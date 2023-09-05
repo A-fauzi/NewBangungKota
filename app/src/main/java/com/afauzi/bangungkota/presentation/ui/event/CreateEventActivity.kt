@@ -4,11 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityCreateEventBinding
 import com.afauzi.bangungkota.domain.model.Event
+import com.afauzi.bangungkota.presentation.ui.main.MainActivity
 import com.afauzi.bangungkota.utils.Constant
 import com.afauzi.bangungkota.utils.Constant.RC_IMAGE_GALLERY
 import com.afauzi.bangungkota.utils.CustomViews
@@ -93,13 +95,32 @@ class CreateEventActivity : AppCompatActivity() {
             )
             if (this::filePathImageGallery.isInitialized) {
                 // JIka semua validasi pada create event sudah memenuhi
-                uploadMediaAndData(filePathImageGallery, data) {
+                binding.btnCreateEvent.visibility = View.GONE
+                binding.progressbar.visibility = View.VISIBLE
+                enabledStateForm(false)
 
+                uploadMediaAndData(filePathImageGallery, data) { isSuccessfullyTransactionDb ->
+                    if (isSuccessfullyTransactionDb)  {
+                        val intent = Intent(this@CreateEventActivity, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        toast(this, "Operasi gagal, ada kesalahan😥")
+                        binding.btnCreateEvent.visibility = View.VISIBLE
+                        binding.progressbar.visibility = View.GONE
+                    }
                 }
             } else {
                 toast(this, "Upload Gambar dulu 🤦‍♂️")
             }
         }
+    }
+
+    private fun enabledStateForm(state: Boolean) {
+        binding.eventName.outlinedTextFieldEvent.isEnabled = state
+        binding.eventLocation.outlinedTextFieldEvent.isEnabled = state
+        binding.outlinedTextFieldEventDesc.isEnabled = state
     }
 
     private fun getImageFromGalerry() {
