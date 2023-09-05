@@ -18,6 +18,7 @@ import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.FragmentHomeBinding
+import com.afauzi.bangungkota.domain.model.Event
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingEvent
 import com.afauzi.bangungkota.presentation.ui.event.CreateEventActivity
 import com.afauzi.bangungkota.presentation.viewmodels.AuthViewModel
@@ -38,7 +39,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var adapterPagingEvent: AdapterPagingEvent
@@ -51,7 +52,7 @@ class HomeFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
-        adapterPagingEvent = AdapterPagingEvent(requireActivity())
+        adapterPagingEvent = AdapterPagingEvent(requireActivity(), this)
         return binding.root
     }
 
@@ -124,8 +125,9 @@ class HomeFragment : Fragment() {
 
         binding.currentDate.text = currentDate()
 
+    }
 
-
-
+    override fun onClickItemEvent(data: Event) {
+        toast(requireActivity(), data.id)
     }
 }

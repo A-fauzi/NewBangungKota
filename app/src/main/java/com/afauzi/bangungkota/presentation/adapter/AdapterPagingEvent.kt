@@ -11,7 +11,7 @@ import com.afauzi.bangungkota.databinding.ComponentListEventBinding
 import com.afauzi.bangungkota.domain.model.Event
 import com.bumptech.glide.Glide
 
-class AdapterPagingEvent(private val context: Context): PagingDataAdapter<Event, AdapterPagingEvent.EventViewHolder>(
+class AdapterPagingEvent(private val context: Context, private val listenerAdapterEvent: ListenerAdapterEvent): PagingDataAdapter<Event, AdapterPagingEvent.EventViewHolder>(
     EventDiffCallback
 ) {
 
@@ -25,7 +25,7 @@ class AdapterPagingEvent(private val context: Context): PagingDataAdapter<Event,
                 .load(event.image)
                 .into(binding.itemImage)
             binding.cvItem.setOnClickListener {
-                Toast.makeText(context, event.title, Toast.LENGTH_SHORT).show()
+                listenerAdapterEvent.onClickItemEvent(event)
             }
         }
     }
@@ -54,5 +54,9 @@ class AdapterPagingEvent(private val context: Context): PagingDataAdapter<Event,
                 return oldItem == newItem
             }
         }
+    }
+
+    interface ListenerAdapterEvent {
+        fun onClickItemEvent(data: Event)
     }
 }
