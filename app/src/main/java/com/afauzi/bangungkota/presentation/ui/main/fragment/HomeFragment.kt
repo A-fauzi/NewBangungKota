@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.FragmentHomeBinding
+import com.afauzi.bangungkota.presentation.viewmodels.AuthViewModel
 import com.afauzi.bangungkota.utils.CustomViews
 import com.afauzi.bangungkota.utils.CustomViews.toast
 import com.bumptech.glide.Glide
@@ -35,6 +37,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setDataToViews()
+    }
+
+    private fun setDataToViews() {
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
 
@@ -43,7 +49,7 @@ class HomeFragment : Fragment() {
             .asBitmap()
             .load(user?.photoUrl.toString())
             .apply(RequestOptions.circleCropTransform())
-            .into(object : CustomTarget<Bitmap>(){
+            .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     val iconDrawable = BitmapDrawable(resources, resource)
                     binding.appBarLayout.topAppBar.menu.findItem(R.id.user).icon = iconDrawable
