@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.map
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.FragmentHomeBinding
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingEvent
@@ -61,6 +62,7 @@ class HomeFragment : Fragment() {
         getEventList()
 
         binding.rvEvent.apply {
+            layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             adapter = adapterPagingEvent
         }
         binding.fabCreateEvent.setOnClickListener {
