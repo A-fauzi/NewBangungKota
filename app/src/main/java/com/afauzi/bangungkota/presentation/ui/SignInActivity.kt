@@ -52,6 +52,24 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        checkCurrentUser()
+    }
+
+    private fun checkCurrentUser() {
+        authViewModel.isUserSignedIn.observe(this) { isLogged ->
+            if (isLogged) {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                toast(this, "User login is $isLogged please sign in!")
+            }
+        }
+        authViewModel.currentUser()
+    }
+
 
     private fun initGoogleSignInClient() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

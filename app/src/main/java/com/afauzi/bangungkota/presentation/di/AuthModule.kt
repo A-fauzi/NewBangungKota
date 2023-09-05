@@ -1,8 +1,7 @@
 package com.afauzi.bangungkota.presentation.di
 
-import com.afauzi.bangungkota.data.repository.AuthRepository
-import com.afauzi.bangungkota.data.repository.AuthRepositoryImpl
-import com.afauzi.bangungkota.domain.usecase.SignInWithGoogleUseCase
+import com.afauzi.bangungkota.data.repository.auth.AuthRepository
+import com.afauzi.bangungkota.data.repository.auth.AuthRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,10 +16,4 @@ object AuthModule {
     fun provideAuthRepository(): AuthRepository {
         return AuthRepositoryImpl()
     }
-
-//    @Provides
-//    @Singleton
-//    fun provideSignInWithGoogleUseCase(repository: AuthRepository): SignInWithGoogleUseCase {
-//        return SignInWithGoogleUseCase(repository)
-//    }
 }

@@ -1,4 +1,4 @@
-package com.afauzi.bangungkota.data.repository
+package com.afauzi.bangungkota.data.repository.auth
 
 import androidx.lifecycle.MutableLiveData
 import com.afauzi.bangungkota.domain.model.User
@@ -6,12 +6,7 @@ import com.afauzi.bangungkota.domain.state.ResponseState
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl: AuthRepository {
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -38,5 +33,9 @@ class AuthRepositoryImpl: AuthRepository {
             }
         }
         return authenticatedUserMutableLiveData
+    }
+
+    override fun checkCurrentUser(): Boolean {
+        return firebaseAuth.currentUser !== null
     }
 }
