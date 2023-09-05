@@ -9,7 +9,7 @@ data class Event(
     val title: String = "",
     val description: String = "",
     val address: String = "",
-    val image: String = "",
+    var image: String = "",
     val date: String = "",
     val time: String = "",
     val peopleJoin: List<User> = arrayListOf(),

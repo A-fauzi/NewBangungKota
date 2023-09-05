@@ -8,15 +8,20 @@ import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityCreateEventBinding
+import com.afauzi.bangungkota.domain.model.Event
 import com.afauzi.bangungkota.utils.Constant
 import com.afauzi.bangungkota.utils.Constant.RC_IMAGE_GALLERY
 import com.afauzi.bangungkota.utils.CustomViews
 import com.afauzi.bangungkota.utils.CustomViews.toast
+import com.afauzi.bangungkota.utils.UniqueIdGenerator
+import com.afauzi.bangungkota.utils.UniqueIdGenerator.generateUniqueId
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,9 +37,10 @@ class CreateEventActivity : AppCompatActivity() {
 
         setViewAppBar()
         setViewFormTextField()
-        setDataToView()
+        onClickViews()
+    }
 
-
+    private fun onClickViews() {
         binding.cvUploadImage.setOnClickListener {
             getImageFromGalerry()
         }
@@ -72,10 +78,24 @@ class CreateEventActivity : AppCompatActivity() {
 
             }
         }
-
         binding.btnCreateEvent.setOnClickListener {
+            val auth = FirebaseAuth.getInstance()
+            val user = auth.currentUser
+
+            val data = Event(
+                id = generateUniqueId(),
+                title = binding.eventName.editTextCreateEvent.text.toString(),
+                address = binding.eventLocation.editTextCreateEvent.text.toString(),
+                date = binding.eventDate.editTextCreateEvent.text.toString(),
+                time = binding.eventTime.editTextCreateEvent.text.toString(),
+                createdBy = user?.uid.toString(),
+                description = binding.etDescription.text.toString()
+            )
             if (this::filePathImageGallery.isInitialized) {
-                toast(this, filePathImageGallery.toString())
+                // JIka semua validasi pada create event sudah memenuhi
+                uploadMediaAndData(filePathImageGallery, data) {
+
+                }
             } else {
                 toast(this, "Upload Gambar dulu 🤦‍♂️")
             }
@@ -142,12 +162,54 @@ class CreateEventActivity : AppCompatActivity() {
 
     }
 
-    private fun setDataToView() {
+    fun uploadMediaToStorage(uri: Uri, onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit) {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val fileName = UUID.randomUUID()
+        val mediaRef = storageRef.child("/event/${fileName}.jpg") // Ganti dengan nama yang sesuai
 
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
-
-
-
+        mediaRef.putFile(uri)
+            .addOnSuccessListener {
+                mediaRef.downloadUrl.addOnSuccessListener { uri ->
+                    onSuccess(uri.toString())
+                }.addOnFailureListener {
+                    onFailure(it)
+                }
+            }
+            .addOnFailureListener {
+                onFailure(it)
+            }
     }
+
+    fun uploadDataToFirestore(data: Event, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("events").document(data.id) // Ganti dengan nama yang sesuai
+
+        db.runTransaction { transaction ->
+            transaction.set(docRef, data)
+            null // Transaksi berhasil, kembalikan null
+        }
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener {
+                onFailure(it)
+            }
+    }
+
+    fun uploadMediaAndData(uri: Uri, data: Event, onComplete: (Boolean) -> Unit) {
+
+        uploadMediaToStorage(uri, { mediaUrl ->
+            data.image = mediaUrl // Menghubungkan URL media dengan data Firestore
+            uploadDataToFirestore(data, {
+                onComplete(true) // Keduanya berhasil
+            }, {
+                onComplete(false) // Salah satu operasi gagal
+            })
+        }, {
+            onComplete(false) // Salah satu operasi gagal
+        })
+    }
+
+
+
 }
