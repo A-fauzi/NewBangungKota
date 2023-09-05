@@ -9,8 +9,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-// app/src/main/java/com/contoh/aplikasi/presentation/di/AuthModule.kt
-
 @Module
 @InstallIn(SingletonComponent::class)
 object AuthModule {
@@ -20,9 +18,9 @@ object AuthModule {
         return AuthRepositoryImpl()
     }
 
-    @Provides
-    @Singleton
-    fun provideSignInWithGoogleUseCase(repository: AuthRepository): SignInWithGoogleUseCase {
-        return SignInWithGoogleUseCase(repository)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideSignInWithGoogleUseCase(repository: AuthRepository): SignInWithGoogleUseCase {
+//        return SignInWithGoogleUseCase(repository)
+//    }
 }
