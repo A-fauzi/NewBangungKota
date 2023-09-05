@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivitySignInBinding
+import com.afauzi.bangungkota.domain.model.User
 import com.afauzi.bangungkota.domain.state.ResponseState
 import com.afauzi.bangungkota.presentation.ui.main.MainActivity
 import com.afauzi.bangungkota.presentation.viewmodels.AuthViewModel
@@ -122,17 +123,11 @@ class SignInActivity : AppCompatActivity() {
                     if (authenticatedUser.data != null){
                         //update ui
                         toast(this, "Hi ${authenticatedUser.data.name}")
-                        userViewModel.saveData(authenticatedUser.data.uid, authenticatedUser.data)
-                            .addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    toast(this, "data kamu disimpan di database!")
-                                } else {
-                                    toast(this, "data kamu gagal disimpan di database!")
-                                }
-                            }
-                            .addOnFailureListener {
-                                toast(this, "Error save data user: Error -> ${it.message}")
-                            }
+
+                        saveUser(authenticatedUser.data.uid, authenticatedUser.data)
+
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
                     } else {
                         toast(this, "data null")
                     }
@@ -143,6 +138,20 @@ class SignInActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun saveUser(documentId: String, data: User) {
+        userViewModel.saveData(documentId, data)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    toast(this, "data kamu disimpan di database!")
+                } else {
+                    toast(this, "data kamu gagal disimpan di database!")
+                }
+            }
+            .addOnFailureListener {
+                toast(this, "Error save data user: Error -> ${it.message}")
+            }
     }
 
 }
