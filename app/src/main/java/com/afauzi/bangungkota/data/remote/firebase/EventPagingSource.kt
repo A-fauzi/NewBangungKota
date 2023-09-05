@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.afauzi.bangungkota.domain.model.Event
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 
@@ -20,14 +21,14 @@ class EventPagingSource: PagingSource<QuerySnapshot, Event>() {
     override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Event> {
         return try {
             val currentPage = params.key ?: db.collection("events")
-                .orderBy("createdAt")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .limit(params.loadSize.toLong())
                 .get()
                 .await()
 
             val lastDocumentSnapshot = currentPage.documents.lastOrNull()
             val nextPage = db.collection("events")
-                .orderBy("createdAt")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .startAfter(lastDocumentSnapshot)
                 .limit(params.loadSize.toLong())
                 .get()
