@@ -29,20 +29,14 @@
     </item>
     <item
         android:id="@+id/labels_item"
-        android:title="Label">
+        android:title="Account">
         <menu>
             <item
-                android:id="@+id/label_one"
+                android:id="@+id/logout"
                 android:checkable="true"
-                android:icon="@drawable/icon_google"
-                android:title="Google"
+                android:icon="@drawable/power"
+                android:title="Logout"
                 app:showAsAction="ifRoom" />
-            <item
-                android:checkable="true"
-                android:icon="@drawable/icon_google"
-                android:title="Google"
-                app:showAsAction="ifRoom" />
-
         </menu>
     </item>
 </menu>

@@ -15,7 +15,7 @@
         app:layout_scrollEffect="compress"
         app:layout_scrollFlags="scroll|enterAlways|snap"
         app:menu="@menu/top_app_bar"
-        app:navigationIcon="@drawable/menu"
+        app:navigationIcon="@drawable/arrow_small_left"
         app:titleCentered="true"
         tools:title="Akhmad Fauzi" />
 

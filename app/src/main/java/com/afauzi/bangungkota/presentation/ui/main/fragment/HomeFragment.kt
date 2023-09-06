@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +24,7 @@ import com.afauzi.bangungkota.databinding.ComponentBottomSheetMorePostBinding
 import com.afauzi.bangungkota.databinding.FragmentHomeBinding
 import com.afauzi.bangungkota.domain.model.Event
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingEvent
+import com.afauzi.bangungkota.presentation.ui.auth.SignInActivity
 import com.afauzi.bangungkota.presentation.ui.event.CreateEventActivity
 import com.afauzi.bangungkota.presentation.viewmodels.AuthViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.EventViewModel
@@ -33,6 +37,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -69,7 +74,8 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
         getEventList()
 
         binding.rvEvent.apply {
-            layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+            layoutManager =
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             adapter = adapterPagingEvent
         }
         binding.fabCreateEvent.setOnClickListener {
@@ -121,7 +127,7 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
         val user = auth.currentUser
 
         binding.appBarLayout.topAppBar.navigationIcon = null
-        binding.appBarLayout.topAppBar.setOnMenuItemClickListener {item ->
+        binding.appBarLayout.topAppBar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.user -> {
                     binding.drawerLayout.open()
@@ -131,12 +137,36 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
             }
         }
 
-//        binding.navigationView.setNavigationItemSelectedListener { menuItem ->
-//            // Handle menu item selected
-//            menuItem.isChecked = true
-//            binding.drawerLayout.close()
-//            true
-//        }
+        val headerView = binding.navigationView.getHeaderView(0)
+        val topAppBar = headerView.findViewById<MaterialToolbar>(R.id.topAppBar)
+        topAppBar.navigationIcon = ResourcesCompat.getDrawable(resources, R.drawable.arrow_small_left, null)
+        topAppBar.menu.findItem(R.id.user).icon = ResourcesCompat.getDrawable(resources, R.drawable.pencil, null)
+        topAppBar.setNavigationOnClickListener {
+            binding.drawerLayout.close()
+        }
+        topAppBar.setBackgroundColor(resources.getColor(R.color.purple_500))
+
+        val imageView = headerView.findViewById<ImageView>(R.id.iv_profile_header)
+        val username = headerView.findViewById<TextView>(R.id.tv_name_user_drawer_header)
+        val email = headerView.findViewById<TextView>(R.id.tv_email_user_drawer_header)
+        username.text = user?.displayName
+        email.text = user?.email
+        Glide.with(requireActivity())
+            .load(user?.photoUrl)
+            .into(imageView)
+
+        val menu = binding.navigationView.menu.findItem(R.id.logout)
+        menu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.logout -> {
+                    auth.signOut()
+                    startActivity(Intent(requireActivity(), SignInActivity::class.java))
+                    activity?.finish()
+                    true // Menyatakan bahwa tindakan sudah ditangani
+                }
+                else -> false // Tidak ada tindakan yang ditentukan
+            }
+        }
 
         binding.appBarLayout.topAppBar.title = "Hi ${user?.displayName} 🙌"
         imageGlideForCircle(
