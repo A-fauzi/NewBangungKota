@@ -1,4 +1,4 @@
-package com.afauzi.bangungkota.presentation.di
+package com.afauzi.bangungkota.di
 
 import com.afauzi.bangungkota.data.repository.auth.AuthRepository
 import com.afauzi.bangungkota.data.repository.auth.AuthRepositoryImpl

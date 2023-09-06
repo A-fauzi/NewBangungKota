@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ComponentBottomSheetMorePostBinding
@@ -18,6 +17,7 @@ import com.afauzi.bangungkota.databinding.FragmentCommunityBinding
 import com.afauzi.bangungkota.domain.model.Post
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingPost
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
+import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.afauzi.bangungkota.utils.CustomViews.toast
 import com.afauzi.bangungkota.utils.UniqueIdGenerator.generateUniqueId
 import com.bumptech.glide.Glide
@@ -25,16 +25,18 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class CommunityFragment : Fragment() {
 
     private lateinit var binding: FragmentCommunityBinding
     private lateinit var adapterPagingPost: AdapterPagingPost
 
     private val postViewModel: PostViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,9 +64,8 @@ class CommunityFragment : Fragment() {
         componentListCommunityPostBinding: ComponentListCommunityPostBinding,
         post: Post
     ) {
-        val db = FirebaseFirestore.getInstance()
 
-        db.collection("users").document(post.uid.toString()).get()
+        userViewModel.getUserById(post.uid.toString())
             .addOnSuccessListener {
                 if (it.exists()) {
                     setDataListItem(post, componentListCommunityPostBinding, it)

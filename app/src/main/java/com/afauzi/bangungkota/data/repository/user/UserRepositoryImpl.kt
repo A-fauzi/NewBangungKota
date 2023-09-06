@@ -2,6 +2,7 @@ package com.afauzi.bangungkota.data.repository.user
 
 import com.afauzi.bangungkota.domain.model.User
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UserRepositoryImpl: UserRepository {
@@ -11,5 +12,11 @@ class UserRepositoryImpl: UserRepository {
         return db.collection("users")
             .document(documentId)
             .set(data)
+    }
+
+    override fun getUserById(documentId: String): Task<DocumentSnapshot> {
+        return db.collection("users")
+            .document(documentId)
+            .get()
     }
 }
