@@ -7,9 +7,13 @@ import com.afauzi.bangungkota.data.repository.post.PostRepository
 import com.afauzi.bangungkota.data.repository.post.PostRepositoryImpl
 import com.afauzi.bangungkota.domain.model.Post
 import com.google.android.gms.tasks.Task
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class PostViewModel: ViewModel() {
-    private val postRepository: PostRepository = PostRepositoryImpl()
+
+@HiltViewModel
+class PostViewModel @Inject constructor(private val postRepository: PostRepository): ViewModel() {
+
     val getEvents = postRepository.postPagingSource().cachedIn(viewModelScope)
 
     fun createPost(data: Post, documentId: String): Task<Void> {

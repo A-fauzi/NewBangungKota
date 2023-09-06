@@ -10,8 +10,9 @@ import com.afauzi.bangungkota.domain.model.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-class EventViewModel: ViewModel() {
-    private val eventRepository: EventRepository = EventRepositoryImpl()
+@HiltViewModel
+class EventViewModel @Inject constructor(private val eventRepository: EventRepository): ViewModel() {
+
     val getEvents = eventRepository.eventPagingSource().cachedIn(viewModelScope)
 
     fun createEvent(uri: Uri, data: Event, onComplete: (Boolean) -> Unit) {
