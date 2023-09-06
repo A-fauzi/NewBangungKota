@@ -184,6 +184,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <TextView
+                    android:id="@+id/tv_title_event"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_16"
@@ -192,6 +193,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_date_event"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Monday, 23 January 2020"
@@ -199,6 +201,7 @@
                     android:layout_marginTop="@dimen/margin_8"/>
 
                 <TextView
+                    android:id="@+id/tv_desc_event"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_16"
