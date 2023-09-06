@@ -72,6 +72,9 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun signInUsingGoogle() {
+        binding.progressbar.visibility = View.VISIBLE
+        binding.signInButton.visibility = View.GONE
+
         val signInGoogleIntent = googleSignInClient.signInIntent
         startActivityForResult(signInGoogleIntent, RC_SIGN_IN)
     }
@@ -88,6 +91,8 @@ class SignInActivity : AppCompatActivity() {
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 toast(this, e.message)
+                binding.progressbar.visibility = View.GONE
+                binding.signInButton.visibility = View.VISIBLE
             }
         }
     }
@@ -105,6 +110,10 @@ class SignInActivity : AppCompatActivity() {
                 is ResponseState.Error -> {
                     authenticatedUser.message?.let {
                         toast(this, it)
+
+                        binding.progressbar.visibility = View.GONE
+                        binding.signInButton.visibility = View.VISIBLE
+
                     }
                 }
                 is ResponseState.Success -> {
@@ -118,11 +127,15 @@ class SignInActivity : AppCompatActivity() {
                         finish()
                     } else {
                         toast(this, "data null")
+
+                        binding.progressbar.visibility = View.GONE
+                        binding.signInButton.visibility = View.VISIBLE
                     }
                 }
                 is ResponseState.Loading -> {
                     //show progress
-                    binding.progressbar.visibility = View.VISIBLE
+                    binding.progressbar.visibility = View.GONE
+                    binding.signInButton.visibility = View.VISIBLE
                 }
             }
         }
