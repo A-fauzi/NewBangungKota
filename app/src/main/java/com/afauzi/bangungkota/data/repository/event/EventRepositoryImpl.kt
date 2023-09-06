@@ -86,7 +86,40 @@ class EventRepositoryImpl: EventRepository {
         TODO("Not yet implemented")
     }
 
-    override fun deleteEvent(documentId: String): Task<Void> {
-        TODO("Not yet implemented")
+    private fun deleteDataFromFirestore(documentId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("events").document(documentId) // Ganti dengan nama yang sesuai
+
+        docRef.delete()
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener {
+                onFailure(it)
+            }
+    }
+
+    private fun deleteMediaFromStorage(mediaUrl: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(mediaUrl)
+
+        storageRef.delete()
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener {
+                onFailure(it)
+            }
+    }
+
+    override fun deleteEvent(documentId: String, mediaUrl: String, onComplete: (Boolean) -> Unit) {
+        deleteDataFromFirestore(documentId, {
+            deleteMediaFromStorage(mediaUrl, {
+                onComplete(true) // Keduanya berhasil dihapus
+            }, {
+                onComplete(false) // Penghapusan media gagal
+            })
+        }, {
+            onComplete(false) // Penghapusan data dari Firestore gagal
+        })
     }
 }

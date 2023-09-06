@@ -17,4 +17,8 @@ class EventViewModel: ViewModel() {
     fun createEvent(uri: Uri, data: Event, onComplete: (Boolean) -> Unit) {
         eventRepository.createEventDataAndMediaFireStore(uri, data, onComplete)
     }
+
+    fun deleteEvent(documentId: String, mediaUrl: String, onComplete: (Boolean) -> Unit) {
+        eventRepository.deleteEvent(documentId, mediaUrl, onComplete)
+    }
 }

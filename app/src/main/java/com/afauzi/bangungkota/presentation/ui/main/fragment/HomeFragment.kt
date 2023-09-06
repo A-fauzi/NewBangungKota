@@ -132,7 +132,8 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
     }
 
     override fun onClickItemEvent(data: Event) {
-        deleteDataAndMedia(data.id, data.image) {
+
+        eventViewModel.deleteEvent(data.id, data.image) {
             if (it) {
                 toast(requireActivity(), "Success delete data🙌")
                 adapterPagingEvent.refresh()
@@ -140,6 +141,7 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
                 toast(requireActivity(), "Gagal delete data🙌")
             }
         }
+
     }
 
     fun deleteDataFromFirestore(documentId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {

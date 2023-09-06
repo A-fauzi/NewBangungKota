@@ -17,5 +17,5 @@ interface EventRepository {
 
     fun updateEvent(documentId: String, data: Event): Task<Void>
 
-    fun deleteEvent(documentId: String): Task<Void>
+    fun deleteEvent(documentId: String, mediaUrl: String, onComplete: (Boolean) -> Unit)
 }
