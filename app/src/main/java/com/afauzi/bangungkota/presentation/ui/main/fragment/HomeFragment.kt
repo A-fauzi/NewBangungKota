@@ -33,6 +33,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -130,6 +132,52 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
     }
 
     override fun onClickItemEvent(data: Event) {
-        toast(requireActivity(), data.id)
+        deleteDataAndMedia(data.id, data.image) {
+            if (it) {
+                toast(requireActivity(), "Success delete data🙌")
+                adapterPagingEvent.refresh()
+            } else {
+                toast(requireActivity(), "Gagal delete data🙌")
+            }
+        }
     }
+
+    fun deleteDataFromFirestore(documentId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("events").document(documentId) // Ganti dengan nama yang sesuai
+
+        docRef.delete()
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener {
+                onFailure(it)
+            }
+    }
+
+    fun deleteMediaFromStorage(mediaUrl: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(mediaUrl)
+
+        storageRef.delete()
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener {
+                onFailure(it)
+            }
+    }
+
+    fun deleteDataAndMedia(documentId: String, mediaUrl: String, onComplete: (Boolean) -> Unit) {
+        deleteDataFromFirestore(documentId, {
+            deleteMediaFromStorage(mediaUrl, {
+                onComplete(true) // Keduanya berhasil dihapus
+            }, {
+                onComplete(false) // Penghapusan media gagal
+            })
+        }, {
+            onComplete(false) // Penghapusan data dari Firestore gagal
+        })
+    }
+
+
 }
