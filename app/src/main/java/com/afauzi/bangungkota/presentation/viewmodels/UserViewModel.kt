@@ -15,7 +15,7 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         return userRepository.saveUser(documentId, data)
     }
 
-    fun getUserById(documentId: String): Task<DocumentSnapshot> {
+    suspend fun getUserById(documentId: String): Task<DocumentSnapshot> {
         return userRepository.getUserById(documentId)
     }
 }

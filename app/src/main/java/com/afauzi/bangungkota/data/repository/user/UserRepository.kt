@@ -6,5 +6,5 @@ import com.google.firebase.firestore.DocumentSnapshot
 
 interface UserRepository {
     fun saveUser(documentId: String, data: User): Task<Void>
-    fun getUserById(documentId: String): Task<DocumentSnapshot>
+    suspend fun getUserById(documentId: String): Task<DocumentSnapshot>
 }

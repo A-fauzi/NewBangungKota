@@ -65,17 +65,19 @@ class CommunityFragment : Fragment() {
         post: Post
     ) {
 
-        userViewModel.getUserById(post.uid.toString())
-            .addOnSuccessListener {
-                if (it.exists()) {
-                    setDataListItem(post, componentListCommunityPostBinding, it)
-                } else {
-                    // tidak ada data uid di list
+        lifecycleScope.launch {
+            userViewModel.getUserById(post.uid.toString())
+                .addOnSuccessListener {
+                    if (it.exists()) {
+                        setDataListItem(post, componentListCommunityPostBinding, it)
+                    } else {
+                        // tidak ada data uid di list
+                    }
                 }
-            }
-            .addOnFailureListener {
-                toast(requireActivity(), it.message)
-            }
+                .addOnFailureListener {
+                    toast(requireActivity(), it.message)
+                }
+        }
     }
 
     private fun setDataListItem(
