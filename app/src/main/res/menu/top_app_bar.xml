@@ -5,7 +5,7 @@
         android:id="@+id/user"
         android:title="@string/user"
         android:contentDescription="@string/user"
-        android:icon="@drawable/circle_user_filled"
+        android:icon="@drawable/ic_circle_user_filled"
         app:showAsAction="ifRoom" />
 
 </menu>
