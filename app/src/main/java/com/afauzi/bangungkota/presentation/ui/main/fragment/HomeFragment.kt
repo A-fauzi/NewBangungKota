@@ -111,6 +111,9 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
                     }.collect {
                         //you get all the data here
                         val list = adapterPagingEvent.snapshot()
+
+                        Log.d("HomeFragment", list.toString())
+
                         if (list.isEmpty()) {
                             binding.tvDataEmpty.visibility = View.VISIBLE
                             binding.rvEvent.visibility = View.GONE
