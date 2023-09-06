@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.paging.PagingData
 import com.afauzi.bangungkota.domain.model.Event
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import kotlinx.coroutines.flow.Flow
@@ -13,9 +14,9 @@ interface EventRepository {
 
     fun createEventDataAndMediaFireStore(uri: Uri, data: Event, onComplete: (Boolean) -> Unit)
 
-    fun getEvent(documentId: String): Task<Void>
+    suspend fun getEvent(documentId: String): Task<DocumentSnapshot>
 
     fun updateEvent(documentId: String, data: Event): Task<Void>
 
-    fun deleteEvent(documentId: String, mediaUrl: String, onComplete: (Boolean) -> Unit)
+    fun deleteEventDataAndMediaFireStore(documentId: String, mediaUrl: String, onComplete: (Boolean) -> Unit)
 }

@@ -20,6 +20,6 @@ class EventViewModel @Inject constructor(private val eventRepository: EventRepos
     }
 
     fun deleteEvent(documentId: String, mediaUrl: String, onComplete: (Boolean) -> Unit) {
-        eventRepository.deleteEvent(documentId, mediaUrl, onComplete)
+        eventRepository.deleteEventDataAndMediaFireStore(documentId, mediaUrl, onComplete)
     }
 }

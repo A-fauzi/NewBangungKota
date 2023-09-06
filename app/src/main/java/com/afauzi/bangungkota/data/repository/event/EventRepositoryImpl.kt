@@ -5,52 +5,49 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.afauzi.bangungkota.data.remote.firebase.FireStorageManager
+import com.afauzi.bangungkota.data.remote.firebase.FireStoreManager
 import com.afauzi.bangungkota.domain.model.Event
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
-class EventRepositoryImpl: EventRepository {
-   override fun eventPagingSource(): Flow<PagingData<Event>> {
-       val pagingConfig = PagingConfig(
-           pageSize = 20, // Jumlah item per halaman
-           prefetchDistance = 3, // Jumlah item yang akan diambil sebelum akhir halaman saat scroll
-           enablePlaceholders = false // Apakah item-placeholder diaktifkan
-       )
-       val pager = Pager(pagingConfig) {
-           EventPagingSource()
-       }.flow
+class EventRepositoryImpl : EventRepository {
+    private val fileName = UUID.randomUUID()
+    private val fireStoreManager: FireStoreManager<Event> = FireStoreManager("events")
+    private val fireStorageManager: FireStorageManager = FireStorageManager("/events/${fileName}.jpg")
 
-       return pager
-   }
+    override fun eventPagingSource(): Flow<PagingData<Event>> {
+        val pagingConfig = PagingConfig(
+            pageSize = 20, // Jumlah item per halaman
+            prefetchDistance = 3, // Jumlah item yang akan diambil sebelum akhir halaman saat scroll
+            enablePlaceholders = false // Apakah item-placeholder diaktifkan
+        )
+        val pager = Pager(pagingConfig) {
+            EventPagingSource()
+        }.flow
 
-    private fun uploadMediaToFireStore(uri: Uri, onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit) {
-        val storageRef = FirebaseStorage.getInstance().reference
-        val fileName = UUID.randomUUID()
-        val mediaRef = storageRef.child("/event/${fileName}.jpg") // Ganti dengan nama yang sesuai
-
-        mediaRef.putFile(uri)
-            .addOnSuccessListener {
-                mediaRef.downloadUrl.addOnSuccessListener { uri ->
-                    onSuccess(uri.toString())
-                }.addOnFailureListener {
-                    onFailure(it)
-                }
-            }
-            .addOnFailureListener {
-                onFailure(it)
-            }
+        return pager
     }
-    private fun uploadDataEvent(data: Event, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("events").document(data.id) // Ganti dengan nama yang sesuai
 
-        db.runTransaction { transaction ->
-            transaction.set(docRef, data)
-            null // Transaksi berhasil, kembalikan null
-        }
+    private fun uploadMediaToFireStore(
+        uri: Uri,
+        onSuccess: (String) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        fireStorageManager.uploadMediaImage(uri, onSuccess, onFailure)
+    }
+
+    private fun uploadDataEvent(
+        data: Event,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+
+        fireStoreManager.createTransaction(data, data.id)
             .addOnSuccessListener {
                 onSuccess()
             }
@@ -77,8 +74,7 @@ class EventRepositoryImpl: EventRepository {
     }
 
 
-
-    override fun getEvent(documentId: String): Task<Void> {
+    override suspend fun getEvent(documentId: String): Task<DocumentSnapshot> {
         TODO("Not yet implemented")
     }
 
@@ -86,32 +82,32 @@ class EventRepositoryImpl: EventRepository {
         TODO("Not yet implemented")
     }
 
-    private fun deleteDataFromFirestore(documentId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("events").document(documentId) // Ganti dengan nama yang sesuai
+    private fun deleteDataFromFirestore(
+        documentId: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
 
-        docRef.delete()
+
+        fireStoreManager.delete(documentId)
             .addOnSuccessListener {
                 onSuccess()
             }
             .addOnFailureListener {
                 onFailure(it)
             }
+
     }
 
-    private fun deleteMediaFromStorage(mediaUrl: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(mediaUrl)
-
-        storageRef.delete()
-            .addOnSuccessListener {
-                onSuccess()
-            }
-            .addOnFailureListener {
-                onFailure(it)
-            }
+    private fun deleteMediaFromStorage(
+        mediaUrl: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        fireStorageManager.deleteMediaImage(mediaUrl, onSuccess, onFailure)
     }
 
-    override fun deleteEvent(documentId: String, mediaUrl: String, onComplete: (Boolean) -> Unit) {
+    override fun deleteEventDataAndMediaFireStore(documentId: String, mediaUrl: String, onComplete: (Boolean) -> Unit) {
         deleteDataFromFirestore(documentId, {
             deleteMediaFromStorage(mediaUrl, {
                 onComplete(true) // Keduanya berhasil dihapus

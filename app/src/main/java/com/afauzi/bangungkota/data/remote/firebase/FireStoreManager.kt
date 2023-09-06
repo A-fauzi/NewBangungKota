@@ -12,6 +12,13 @@ class FireStoreManager<T: Any>(private val collectionPath: String) {
             .set(data)
     }
 
+    fun createTransaction(data: T, documentId: String): Task<Transaction> {
+        return db.runTransaction { transaction ->
+            transaction.set(db.collection(collectionPath).document(documentId), data)
+            null // Transaksi berhasil, kembalikan null
+        }
+    }
+
     fun getData(documentId: String): Task<DocumentSnapshot> {
         return db.collection(collectionPath)
             .document(documentId)
