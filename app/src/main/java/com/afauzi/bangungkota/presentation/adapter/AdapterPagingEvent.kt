@@ -3,7 +3,6 @@ package com.afauzi.bangungkota.presentation.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +24,10 @@ class AdapterPagingEvent(private val context: Context, private val listenerAdapt
                 .load(event.image)
                 .into(binding.itemImage)
             binding.cvItem.setOnClickListener {
-                listenerAdapterEvent.onClickItemEvent(event)
+                listenerAdapterEvent.onClickItemDetail(event)
+            }
+            binding.btnMorePost.setOnClickListener {
+                listenerAdapterEvent.clickItemMore(event)
             }
         }
     }
@@ -57,6 +59,7 @@ class AdapterPagingEvent(private val context: Context, private val listenerAdapt
     }
 
     interface ListenerAdapterEvent {
-        fun onClickItemEvent(data: Event)
+        fun onClickItemDetail(data: Event)
+        fun clickItemMore(data: Event)
     }
 }

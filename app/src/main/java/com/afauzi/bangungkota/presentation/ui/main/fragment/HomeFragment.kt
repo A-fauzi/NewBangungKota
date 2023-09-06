@@ -17,6 +17,7 @@ import androidx.paging.LoadState
 import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afauzi.bangungkota.R
+import com.afauzi.bangungkota.databinding.ComponentBottomSheetMorePostBinding
 import com.afauzi.bangungkota.databinding.FragmentHomeBinding
 import com.afauzi.bangungkota.domain.model.Event
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingEvent
@@ -32,6 +33,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -131,7 +133,7 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
 
     }
 
-    override fun onClickItemEvent(data: Event) {
+    override fun onClickItemDetail(data: Event) {
 
         eventViewModel.deleteEvent(data.id, data.image) {
             if (it) {
@@ -144,42 +146,37 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
 
     }
 
-    fun deleteDataFromFirestore(documentId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("events").document(documentId) // Ganti dengan nama yang sesuai
+    override fun clickItemMore(data: Event) {
+        // BottomSheet
+        val dialog = BottomSheetDialog(requireActivity())
+        val sheetBinding = ComponentBottomSheetMorePostBinding.inflate(layoutInflater)
+        val view = sheetBinding.root
+        dialog.setContentView(view)
 
-        docRef.delete()
-            .addOnSuccessListener {
-                onSuccess()
+        val progressBar = sheetBinding.progressbar
+        val layoutItem = sheetBinding.layoutItem
+        sheetBinding.btnDelete.setOnClickListener {
+
+            progressBar.visibility = View.VISIBLE
+            layoutItem.visibility = View.GONE
+            dialog.setCancelable(false)
+
+            eventViewModel.deleteEvent(data.id, data.image) { isSuccessDeleted ->
+
+                if (isSuccessDeleted) {
+                    adapterPagingEvent.refresh()
+                    dialog.dismiss()
+                    toast(requireActivity(), "Data deleted 👌")
+                } else {
+                    progressBar.visibility = View.GONE
+                    layoutItem.visibility = View.VISIBLE
+                    dialog.setCancelable(true)
+                    toast(requireActivity(), "Ada kesalahan saat menghapus🤦‍♀️")
+                }
+
             }
-            .addOnFailureListener {
-                onFailure(it)
-            }
+        }
+        dialog.show()
     }
-
-    fun deleteMediaFromStorage(mediaUrl: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(mediaUrl)
-
-        storageRef.delete()
-            .addOnSuccessListener {
-                onSuccess()
-            }
-            .addOnFailureListener {
-                onFailure(it)
-            }
-    }
-
-    fun deleteDataAndMedia(documentId: String, mediaUrl: String, onComplete: (Boolean) -> Unit) {
-        deleteDataFromFirestore(documentId, {
-            deleteMediaFromStorage(mediaUrl, {
-                onComplete(true) // Keduanya berhasil dihapus
-            }, {
-                onComplete(false) // Penghapusan media gagal
-            })
-        }, {
-            onComplete(false) // Penghapusan data dari Firestore gagal
-        })
-    }
-
 
 }
