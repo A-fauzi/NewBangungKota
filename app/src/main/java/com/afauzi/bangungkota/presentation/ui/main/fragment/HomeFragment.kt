@@ -25,6 +25,7 @@ import com.afauzi.bangungkota.databinding.FragmentHomeBinding
 import com.afauzi.bangungkota.domain.model.Event
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingEvent
 import com.afauzi.bangungkota.presentation.ui.auth.SignInActivity
+import com.afauzi.bangungkota.presentation.ui.detail.InfoDetailEvent
 import com.afauzi.bangungkota.presentation.ui.event.CreateEventActivity
 import com.afauzi.bangungkota.presentation.viewmodels.AuthViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.EventViewModel
@@ -182,7 +183,7 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
     }
 
     override fun onClickItemDetail(data: Event) {
-        //detail
+        startActivity(Intent(requireActivity(), InfoDetailEvent::class.java))
     }
 
     override fun clickItemMore(data: Event) {
