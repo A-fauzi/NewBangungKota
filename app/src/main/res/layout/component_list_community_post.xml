@@ -38,7 +38,7 @@
                     android:id="@+id/item_name_user"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Anonymous name"
+                    tools:text="Anonymous name"
                     android:textColor="@color/black"
                     android:textSize="@dimen/title_size"
                     android:textStyle="bold"/>
@@ -47,7 +47,7 @@
                     android:id="@+id/item_email_user"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Username@gmail.com"/>
+                    tools:text="Username@gmail.com"/>
             </LinearLayout>
 
             <ImageButton
@@ -66,7 +66,7 @@
             android:id="@+id/tv_text_post"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/lorem"
+            tools:text="@string/lorem"
             android:textColor="@color/black"
             android:layout_marginTop="@dimen/margin_16"/>
 

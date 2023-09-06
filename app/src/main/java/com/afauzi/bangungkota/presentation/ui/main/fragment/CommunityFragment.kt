@@ -12,12 +12,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afauzi.bangungkota.R
+import com.afauzi.bangungkota.databinding.ComponentBottomSheetMorePostBinding
+import com.afauzi.bangungkota.databinding.ComponentListCommunityPostBinding
 import com.afauzi.bangungkota.databinding.FragmentCommunityBinding
 import com.afauzi.bangungkota.domain.model.Post
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingPost
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.utils.CustomViews.toast
 import com.afauzi.bangungkota.utils.UniqueIdGenerator.generateUniqueId
+import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -37,8 +41,58 @@ class CommunityFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentCommunityBinding.inflate(layoutInflater, container, false)
-        adapterPagingPost = AdapterPagingPost()
+
+        adapterPagingPost = AdapterPagingPost{componentListCommunityPostBinding, post ->
+            bindDataPostToViews(componentListCommunityPostBinding, post)
+        }
+
         return binding.root
+    }
+
+    private fun bindDataPostToViews(
+        componentListCommunityPostBinding: ComponentListCommunityPostBinding,
+        post: Post
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+        db.collection("users").document(post.uid.toString()).get()
+            .addOnSuccessListener {
+                if (it.exists()) {
+
+                    if (user?.uid != post.uid) componentListCommunityPostBinding.btnMorePost.visibility = View.GONE
+
+                    componentListCommunityPostBinding.tvTextPost.text = post.text
+                    componentListCommunityPostBinding.itemNameUser.text = it.getString("name")
+                    componentListCommunityPostBinding.itemEmailUser.text = it.getString("email")
+                    Glide.with(requireActivity())
+                        .load(it.getString("photo"))
+                        .error(R.drawable.example_profile)
+                        .into(componentListCommunityPostBinding.itemIvProfile)
+
+                    // GET VALUE AND SET TO ITEM POSTING COMMUNITY
+                    componentListCommunityPostBinding.btnMorePost.setOnClickListener {
+                        // Handle button more post
+                        // BottomSheet
+                        val dialog = BottomSheetDialog(requireActivity())
+                        val sheetBinding = ComponentBottomSheetMorePostBinding.inflate(layoutInflater)
+                        val view = sheetBinding.root
+                        dialog.setContentView(view)
+
+                        val progressBar = sheetBinding.progressbar
+                        val layoutItem = sheetBinding.layoutItem
+                        sheetBinding.btnDelete.setOnClickListener {
+//                            deleteEventPost(progressBar, layoutItem, dialog, post)
+                        }
+                        dialog.show()
+                    }
+                } else {
+                    // tidak ada data uid di list
+                }
+            }
+            .addOnFailureListener {
+                toast(requireActivity(), it.message)
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,9 +100,13 @@ class CommunityFragment : Fragment() {
 
         setTopAppBar()
         onClickViews()
+        setUpRecyclerViewAdapter()
+    }
 
+    private fun setUpRecyclerViewAdapter() {
         binding.rvCommunityPost.apply {
-            layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+            layoutManager =
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             adapter = adapterPagingPost
         }
 
@@ -57,7 +115,6 @@ class CommunityFragment : Fragment() {
                 adapterPagingPost.submitData(pagingData)
             }
         }
-
     }
 
     private fun setTopAppBar() {
