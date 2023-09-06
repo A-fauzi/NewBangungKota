@@ -134,16 +134,7 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
     }
 
     override fun onClickItemDetail(data: Event) {
-
-        eventViewModel.deleteEvent(data.id, data.image) {
-            if (it) {
-                toast(requireActivity(), "Success delete data🙌")
-                adapterPagingEvent.refresh()
-            } else {
-                toast(requireActivity(), "Gagal delete data🙌")
-            }
-        }
-
+        //detail
     }
 
     override fun clickItemMore(data: Event) {

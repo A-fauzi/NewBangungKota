@@ -19,7 +19,6 @@ class AdapterPagingEvent(private val context: Context, private val listenerAdapt
             binding.itemTitle.text = event.title
             binding.itemAddress.text = event.address
             binding.itemDate.text = event.date
-            binding.itemTime.text = event.time
             Glide.with(context)
                 .load(event.image)
                 .into(binding.itemImage)
