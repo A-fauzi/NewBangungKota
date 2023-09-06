@@ -30,18 +30,11 @@ class InfoDetailEvent : AppCompatActivity() {
         binding = ActivityInfoDetailEventBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.toolAppBar.topAppBar.title = "Event Detal ✨"
+        binding.toolAppBar.topAppBar.menu.findItem(R.id.user).isVisible = false
+
         auth = FirebaseAuth.getInstance()
         user = auth.currentUser
-
-        if (user != null) {
-            UtilityLibrary.imageGlideForCircle(
-                context = this,
-                dataImg = user?.photoUrl.toString(),
-                res = resources
-            ) { bitmap ->
-                binding.toolAppBar.topAppBar.menu.findItem(R.id.user).icon = bitmap
-            }
-        }
 
         binding.toolAppBar.topAppBar.setNavigationOnClickListener {
             onBackPressed()

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cv_item"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -38,7 +39,9 @@
             android:orientation="vertical"
             android:layout_toEndOf="@id/cv_item_image"
             android:layout_marginStart="@dimen/margin_16"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_more_post"
+            android:layout_marginEnd="@dimen/margin_8">
 
             <TextView
                 android:id="@+id/item_date"
@@ -52,7 +55,9 @@
                 android:id="@+id/item_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Charity Guys"
+                tools:text="@string/lorem"
+                android:maxLines="1"
+                android:ellipsize="marquee"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="@dimen/title_size"
