@@ -4,9 +4,12 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.afauzi.bangungkota.domain.model.Post
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 
 class PostRepositoryImpl: PostRepository {
+    private val db = FirebaseFirestore.getInstance()
     override fun postPagingSource(): Flow<PagingData<Post>> {
         val pagingConfig = PagingConfig(
             pageSize = 20, // Jumlah item per halaman
@@ -18,5 +21,11 @@ class PostRepositoryImpl: PostRepository {
         }.flow
 
         return pager
+    }
+
+    override fun createPost(data: Post, documentId: String): Task<Void> {
+        return db.collection("posts")
+            .document(documentId)
+            .set(data)
     }
 }

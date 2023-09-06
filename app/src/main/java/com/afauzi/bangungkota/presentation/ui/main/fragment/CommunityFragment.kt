@@ -188,18 +188,11 @@ class CommunityFragment : Fragment() {
     }
 
     private fun insertDataPost() {
-
-        val db = FirebaseFirestore.getInstance()
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
 
-        // TEXTFIELD FALSE
         binding.outlineTextfieldProductSpec.isEnabled = false
-
-        // GET TEXT IN EDITTEXT POST
         val textPost = binding.etPostText.text.toString()
-
-        // SET DATA POSTING
         val data = Post(
             id = generateUniqueId(),
             uid = user?.uid,
@@ -207,9 +200,7 @@ class CommunityFragment : Fragment() {
             created_at = Timestamp.now()
         )
 
-        db.collection("posts")
-            .document(data.id)
-            .set(data)
+        postViewModel.createPost(data, data.id)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     adapterPagingPost.refresh()
