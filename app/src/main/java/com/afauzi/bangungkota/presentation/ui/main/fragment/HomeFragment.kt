@@ -120,7 +120,24 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
 
-        // SET DATA TOOLBAR
+        binding.appBarLayout.topAppBar.navigationIcon = null
+        binding.appBarLayout.topAppBar.setOnMenuItemClickListener {item ->
+            when (item.itemId) {
+                R.id.user -> {
+                    binding.drawerLayout.open()
+                    true
+                }
+                else -> false
+            }
+        }
+
+//        binding.navigationView.setNavigationItemSelectedListener { menuItem ->
+//            // Handle menu item selected
+//            menuItem.isChecked = true
+//            binding.drawerLayout.close()
+//            true
+//        }
+
         binding.appBarLayout.topAppBar.title = "Hi ${user?.displayName} 🙌"
         imageGlideForCircle(
             context = requireActivity(),

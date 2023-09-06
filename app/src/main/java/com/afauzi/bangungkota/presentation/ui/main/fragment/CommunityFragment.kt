@@ -205,8 +205,7 @@ class CommunityFragment : Fragment() {
     private fun setTopAppBar() {
         binding.appBarLayout.topAppBar.title = "Community"
         binding.appBarLayout.topAppBar.menu.findItem(R.id.user).isVisible = false
-        binding.appBarLayout.topAppBar.navigationIcon =
-            ResourcesCompat.getDrawable(resources, R.drawable.ic_angle_left, null)
+        binding.appBarLayout.topAppBar.navigationIcon = null
         binding.appBarLayout.topAppBar.setNavigationOnClickListener {
             Toast.makeText(requireActivity(), "Menu Clicked", Toast.LENGTH_SHORT).show()
         }
