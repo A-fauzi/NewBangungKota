@@ -7,23 +7,24 @@
         <menu>
             <item
                 android:checkable="true"
-                android:icon="@drawable/ic_calendar"
-                android:title="Date"
+                android:icon="@drawable/heart_outline"
+                android:title="Like Post 🌹"
+                app:showAsAction="ifRoom" />
+
+            <item
+                android:checkable="true"
+                android:icon="@drawable/comment_alt"
+                android:title="My Post ✨"
                 app:showAsAction="ifRoom" />
             <item
                 android:checkable="true"
-                android:icon="@drawable/ic_calendar"
-                android:title="Date"
+                android:icon="@drawable/calendar_star"
+                android:title="Joined Event 🎉"
                 app:showAsAction="ifRoom" />
             <item
                 android:checkable="true"
-                android:icon="@drawable/ic_calendar"
-                android:title="Date"
-                app:showAsAction="ifRoom" />
-            <item
-                android:checkable="true"
-                android:icon="@drawable/ic_calendar"
-                android:title="Date"
+                android:icon="@drawable/calendar_star"
+                android:title="Create Event 🙌"
                 app:showAsAction="ifRoom" />
         </menu>
     </item>
