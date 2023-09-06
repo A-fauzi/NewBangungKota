@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ComponentBottomSheetMorePostBinding
@@ -27,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -166,6 +168,36 @@ class CommunityFragment : Fragment() {
         lifecycleScope.launch {
             postViewModel.getEvents.collectLatest { pagingData ->
                 adapterPagingPost.submitData(pagingData)
+            }
+        }
+
+        lifecycleScope.launch {
+            adapterPagingPost.loadStateFlow.collectLatest { loadStates ->
+                val isLoading = loadStates.refresh is LoadState.Loading
+                val isLoadingAppend = loadStates.append is LoadState.Loading
+
+                if (isLoading) {
+//                    binding.rvEvent.visibility = View.GONE
+//                    binding.progressbar.visibility = View.VISIBLE
+                } else {
+//                    binding.rvEvent.visibility = View.VISIBLE
+//                    binding.progressbar.visibility = View.GONE
+
+                    // CEK DATA AVAIL IN LIST
+                    adapterPagingPost.loadStateFlow.distinctUntilChangedBy {
+                        it.refresh
+                    }.collect {
+                        //you get all the data here
+                        val list = adapterPagingPost.snapshot()
+                        if (list.isEmpty()) {
+                            binding.tvDataEmpty.visibility = View.VISIBLE
+                            binding.rvCommunityPost.visibility = View.GONE
+                        } else {
+                            binding.tvDataEmpty.visibility = View.GONE
+                            binding.rvCommunityPost.visibility = View.VISIBLE
+                        }
+                    }
+                }
             }
         }
     }

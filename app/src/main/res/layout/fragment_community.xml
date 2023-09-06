@@ -345,13 +345,28 @@
 
                     </LinearLayout>
                 </com.facebook.shimmer.ShimmerFrameLayout>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_community_post"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:listitem="@layout/component_list_community_post"
-                    android:layout_marginStart="@dimen/margin_8"
-                    android:layout_marginEnd="@dimen/margin_8"/>
+                    android:layout_height="wrap_content">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_community_post"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/component_list_community_post"
+                        android:layout_marginStart="@dimen/margin_8"
+                        android:layout_marginEnd="@dimen/margin_8"/>
+
+                    <TextView
+                        android:id="@+id/tv_data_empty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Post masih kosong 🤦‍♂️"
+                        android:textColor="@color/black"
+                        android:visibility="gone"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/margin_8"/>
+                </RelativeLayout>
             </RelativeLayout>
 
         </LinearLayout>
