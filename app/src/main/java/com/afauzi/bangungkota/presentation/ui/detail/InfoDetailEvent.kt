@@ -2,6 +2,7 @@ package com.afauzi.bangungkota.presentation.ui.detail
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -56,6 +57,8 @@ class InfoDetailEvent : AppCompatActivity() {
 
                             Glide.with(this@InfoDetailEvent)
                                 .load(it.getString("photo"))
+                                .placeholder(R.drawable.image_placeholder)
+                                .error(R.drawable.image_error)
                                 .into(binding.ivProfile)
 
                             binding.tvUsername.text = it.getString("name")
@@ -63,6 +66,8 @@ class InfoDetailEvent : AppCompatActivity() {
                             binding.tvUserAddress.text = receivedData.address
                             Glide.with(this@InfoDetailEvent)
                                 .load(receivedData.image)
+                                .placeholder(R.drawable.image_profile_place_holder)
+                                .error(R.drawable.image_error)
                                 .into(binding.ivEvent)
                             binding.tvTitleEvent.text = receivedData.title
                             binding.tvDateEvent.text = receivedData.date

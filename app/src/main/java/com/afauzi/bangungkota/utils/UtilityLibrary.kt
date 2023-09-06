@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import com.afauzi.bangungkota.R
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
@@ -22,6 +23,8 @@ object UtilityLibrary {
         Glide.with(context)
             .asBitmap()
             .load(dataImg)
+            .placeholder(R.drawable.image_profile_place_holder)
+            .error(R.drawable.image_error)
             .apply(RequestOptions.circleCropTransform())
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
