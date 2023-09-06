@@ -109,6 +109,7 @@ class CreateEventActivity : AppCompatActivity() {
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                         startActivity(intent)
                         finish()
+                        overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left)
                     } else {
                         toast(this, "Operasi gagal, ada kesalahan😥")
                         binding.btnCreateEvent.visibility = View.VISIBLE

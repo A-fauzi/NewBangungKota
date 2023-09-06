@@ -23,6 +23,11 @@ class MainActivity : AppCompatActivity() {
         setUpNavigation()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+    }
+
     private fun setUpNavigation() {
         // Temukan NavHostFragment dan dapatkan NavController
         val navHostFragment =

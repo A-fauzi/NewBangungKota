@@ -59,6 +59,7 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setDataToViews()
         getEventList()
 
@@ -70,6 +71,7 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
             startActivity(Intent(requireActivity(), CreateEventActivity::class.java))
         }
     }
+
 
     private fun getEventList() {
         lifecycleScope.launch {
