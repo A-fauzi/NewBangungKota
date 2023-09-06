@@ -8,4 +8,5 @@ import kotlinx.coroutines.flow.Flow
 interface PostRepository {
     fun postPagingSource(): Flow<PagingData<Post>>
     fun createPost(data: Post, documentId: String): Task<Void>
+    fun deletePost(documentId: String): Task<Void>
 }

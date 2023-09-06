@@ -15,4 +15,8 @@ class PostViewModel: ViewModel() {
     fun createPost(data: Post, documentId: String): Task<Void> {
         return postRepository.createPost(data, documentId)
     }
+
+    fun deletePost(documentId: String): Task<Void> {
+        return postRepository.deletePost(documentId)
+    }
 }

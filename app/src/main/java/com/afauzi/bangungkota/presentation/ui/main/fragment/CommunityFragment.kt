@@ -130,8 +130,7 @@ class CommunityFragment : Fragment() {
                 layoutItem.visibility = View.GONE
 
                 // Delete post
-                val db = FirebaseFirestore.getInstance()
-                db.collection("posts").document(post.id).delete()
+                postViewModel.deletePost(post.id)
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
                             toast(requireActivity(), "Post Deleted 🙌")

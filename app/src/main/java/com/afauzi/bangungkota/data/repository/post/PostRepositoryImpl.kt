@@ -28,4 +28,10 @@ class PostRepositoryImpl: PostRepository {
             .document(documentId)
             .set(data)
     }
+
+    override fun deletePost(documentId: String): Task<Void> {
+        return db.collection("posts")
+            .document(documentId)
+            .delete()
+    }
 }
