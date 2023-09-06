@@ -63,7 +63,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_8"
-                        android:text="Jhon Wick"
+                        tools:text="Jhon Wick"
                         android:textColor="@color/black"
                         android:textSize="@dimen/title_size"
                         android:textStyle="bold" />
@@ -73,7 +73,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_8"
-                        android:text="jhon@gmail.com" />
+                        tools:text="jhon@gmail.com" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -92,7 +92,7 @@
                             android:id="@+id/tv_user_address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Jakarta, Indonesia"
+                            tools:text="Jakarta, Indonesia"
                             android:textColor="@color/purple_700" />
 
                     </LinearLayout>
@@ -188,7 +188,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_16"
-                    android:text="Charity Trip"
+                    tools:text="Charity Trip"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -196,7 +196,7 @@
                     android:id="@+id/tv_date_event"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Monday, 23 January 2020"
+                    tools:text="Monday, 23 January 2020"
                     android:textColor="@color/black"
                     android:layout_marginTop="@dimen/margin_8"/>
 
@@ -205,7 +205,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_16"
-                    android:text="@string/lorem"
+                    tools:text="@string/lorem"
                     android:textColor="@color/black" />
 
             </LinearLayout>
