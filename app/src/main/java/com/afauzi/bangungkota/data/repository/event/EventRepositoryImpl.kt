@@ -47,7 +47,7 @@ class EventRepositoryImpl : EventRepository {
         onFailure: (Exception) -> Unit
     ) {
 
-        fireStoreManager.createTransaction(data, data.id)
+        fireStoreManager.createTransaction(data, data.id.toString())
             .addOnSuccessListener {
                 onSuccess()
             }

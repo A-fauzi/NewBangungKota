@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
 import com.afauzi.bangungkota.R
@@ -13,9 +12,7 @@ import com.afauzi.bangungkota.databinding.ActivityCreateEventBinding
 import com.afauzi.bangungkota.domain.model.Event
 import com.afauzi.bangungkota.presentation.ui.main.MainActivity
 import com.afauzi.bangungkota.presentation.viewmodels.EventViewModel
-import com.afauzi.bangungkota.utils.Constant
 import com.afauzi.bangungkota.utils.Constant.RC_IMAGE_GALLERY
-import com.afauzi.bangungkota.utils.CustomViews
 import com.afauzi.bangungkota.utils.CustomViews.toast
 import com.afauzi.bangungkota.utils.UniqueIdGenerator
 import com.afauzi.bangungkota.utils.UniqueIdGenerator.generateUniqueId
