@@ -30,7 +30,7 @@
         android:theme="@style/Theme.BangungKota"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.ui.DetailPostActivity"
+            android:name=".presentation.ui.detail.DetailPostActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

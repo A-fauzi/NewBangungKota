@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -18,9 +17,8 @@ import com.afauzi.bangungkota.databinding.ComponentListCommunityPostBinding
 import com.afauzi.bangungkota.databinding.FragmentCommunityBinding
 import com.afauzi.bangungkota.domain.model.Post
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingPost
-import com.afauzi.bangungkota.presentation.ui.DetailPostActivity
+import com.afauzi.bangungkota.presentation.ui.detail.DetailPostActivity
 import com.afauzi.bangungkota.presentation.ui.camera.CameraStoryActivity
-import com.afauzi.bangungkota.presentation.ui.detail.InfoDetailEvent
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.afauzi.bangungkota.utils.CustomViews.toast
@@ -30,7 +28,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
-import com.skydoves.transformationlayout.TransformationCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy

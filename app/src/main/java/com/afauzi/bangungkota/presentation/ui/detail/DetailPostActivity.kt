@@ -1,13 +1,10 @@
-package com.afauzi.bangungkota.presentation.ui
+package com.afauzi.bangungkota.presentation.ui.detail
 
 import android.content.Context
-import android.icu.text.SimpleDateFormat
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -21,7 +18,6 @@ import com.afauzi.bangungkota.presentation.adapter.AdapterCommentPost
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.afauzi.bangungkota.utils.UniqueIdGenerator
 import com.bumptech.glide.Glide
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -146,7 +142,6 @@ class DetailPostActivity : AppCompatActivity() {
                             .load(it.getString("photo"))
                             .into(viewBinding.itemIvProfile)
                         viewBinding.itemNameUser.text = it.getString("name")
-                        viewBinding.itemEmailUser.text = it.getString("email")
                     }
                     .addOnFailureListener {  }
             }

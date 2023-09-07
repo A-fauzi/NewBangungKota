@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="@dimen/padding_root"
     android:orientation="vertical"
-    tools:context=".presentation.ui.DetailPostActivity">
+    tools:context=".presentation.ui.detail.DetailPostActivity">
 
 
     <include
@@ -38,7 +38,8 @@
                 android:layout_height="match_parent"
                 android:layout_below="@id/tv_comment"
                 android:layout_marginBottom="@dimen/margin_8"
-                tools:listitem="@layout/component_list_community_post"/>
+                tools:listitem="@layout/component_list_reply_post"
+                android:layout_margin="@dimen/margin_8"/>
 
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>

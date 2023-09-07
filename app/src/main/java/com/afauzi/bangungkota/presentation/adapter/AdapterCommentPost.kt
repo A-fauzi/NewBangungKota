@@ -3,15 +3,15 @@ package com.afauzi.bangungkota.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.afauzi.bangungkota.databinding.ComponentListCommunityPostBinding
+import com.afauzi.bangungkota.databinding.ComponentListReplyPostBinding
 import com.afauzi.bangungkota.domain.model.Post
 
-class AdapterCommentPost(private var commentList: List<Post.ReplyPost>, private val bindCallBack: (ComponentListCommunityPostBinding, Post.ReplyPost) -> Unit): RecyclerView.Adapter<AdapterCommentPost.CommentViewHolder>() {
-    inner class CommentViewHolder(val binding: ComponentListCommunityPostBinding): RecyclerView.ViewHolder(binding.root)
+class AdapterCommentPost(private var commentList: List<Post.ReplyPost>, private val bindCallBack: (ComponentListReplyPostBinding, Post.ReplyPost) -> Unit): RecyclerView.Adapter<AdapterCommentPost.CommentViewHolder>() {
+    inner class CommentViewHolder(val binding: ComponentListReplyPostBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ComponentListCommunityPostBinding.inflate(inflater, parent, false)
+        val binding = ComponentListReplyPostBinding.inflate(inflater, parent, false)
         return CommentViewHolder(binding)
     }
 
