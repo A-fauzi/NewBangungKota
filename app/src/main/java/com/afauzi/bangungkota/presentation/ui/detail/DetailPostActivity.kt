@@ -15,6 +15,7 @@ import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityDetailPostBinding
 import com.afauzi.bangungkota.domain.model.Post
 import com.afauzi.bangungkota.presentation.adapter.AdapterCommentPost
+import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.afauzi.bangungkota.utils.UniqueIdGenerator
 import com.bumptech.glide.Glide
@@ -33,7 +34,9 @@ import java.util.*
 class DetailPostActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailPostBinding
+
     private val userViewModel: UserViewModel by viewModels()
+    private val postViewModel: PostViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,16 +107,12 @@ class DetailPostActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun insertDataPost(commentId: String, postId: String, currentUserId: String, text: String) {
-        val databaseReference = FirebaseDatabase.getInstance().reference
         val tanggalSaatIni = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val tanggalDalamFormatQuery = tanggalSaatIni.format(formatter)
         val data = Post.ReplyPost(commentId, postId, currentUserId, text, tanggalDalamFormatQuery)
 
-        // Specify the database reference where you want to store the data
-        val postCommentRef = databaseReference.child("comments").child(postId).child(data.id.toString())
-
-        postCommentRef.setValue(data)
+        postViewModel.createReplyPost(data, postId)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     Toast.makeText(this, "success reply", Toast.LENGTH_SHORT).show()
@@ -124,6 +123,26 @@ class DetailPostActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "error ${it.message}", Toast.LENGTH_SHORT).show()
             }
+
+
+
+//        val databaseReference = FirebaseDatabase.getInstance().reference
+
+//
+//        // Specify the database reference where you want to store the data
+//        val postCommentRef = databaseReference.child("comments").child(postId).child(data.id.toString())
+//
+//        postCommentRef.setValue(data)
+//            .addOnCompleteListener {
+//                if (it.isSuccessful) {
+//                    Toast.makeText(this, "success reply", Toast.LENGTH_SHORT).show()
+//                } else {
+//                    Toast.makeText(this, "not success reply", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            .addOnFailureListener {
+//                Toast.makeText(this, "error ${it.message}", Toast.LENGTH_SHORT).show()
+//            }
 
     }
 
