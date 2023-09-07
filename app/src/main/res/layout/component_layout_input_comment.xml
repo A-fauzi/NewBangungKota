@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_current_user_message"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/example_profile"
+        android:layout_gravity="center_vertical"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/outline_textfield_comment_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/margin_8"
+        android:layout_marginEnd="@dimen/margin_8"
+        app:prefixText="Akhmad Fauzi"
+        app:prefixTextColor="@color/purple_700"
+        android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
+        app:boxCornerRadiusBottomEnd="15dp"
+        app:boxCornerRadiusBottomStart="15dp"
+        app:boxCornerRadiusTopEnd="15dp"
+        app:boxCornerRadiusTopStart="15dp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:endIconDrawable="@drawable/ic_paper_plane_top"
+        app:endIconMode="custom"
+        app:endIconTint="@color/purple_700"
+        app:hintEnabled="false">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_post_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:hint="Write post..."
+            android:inputType="text|textMultiLine"
+            android:padding="16dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>

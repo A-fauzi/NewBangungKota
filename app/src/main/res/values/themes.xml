@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="android:textSize">12sp</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+        <item name="textInputStyle">@style/PrefixTextInputLayout</item>
     </style>
 
     <style name="ThemeOverlay.AppTheme.TextInputEditText.Outlined" parent="">
@@ -21,13 +22,13 @@
     </style>
 
     <!--  SplashScreen  -->
-<!--    <style name="Theme.App.Starting" parent="Theme.SplashScreen">-->
-<!--        <item name="windowSplashScreenAnimatedIcon">@drawable/examle_logo</item>-->
-<!--        <item name="postSplashScreenTheme">@style/Theme.Bangunkota</item>-->
-<!--        <item name="windowSplashScreenBackground">@color/purple_700</item>-->
-<!--        <item name="windowSplashScreenIconBackgroundColor">@color/purple_700</item>-->
-<!--        <item name="windowSplashScreenAnimationDuration">200</item>-->
-<!--    </style>-->
+    <!--    <style name="Theme.App.Starting" parent="Theme.SplashScreen">-->
+    <!--        <item name="windowSplashScreenAnimatedIcon">@drawable/examle_logo</item>-->
+    <!--        <item name="postSplashScreenTheme">@style/Theme.Bangunkota</item>-->
+    <!--        <item name="windowSplashScreenBackground">@color/purple_700</item>-->
+    <!--        <item name="windowSplashScreenIconBackgroundColor">@color/purple_700</item>-->
+    <!--        <item name="windowSplashScreenAnimationDuration">200</item>-->
+    <!--    </style>-->
 
 
     <!--  Bottom sheet  -->
@@ -39,5 +40,15 @@
         <item name="android:background">@drawable/rounded_top_corner</item>
     </style>
     <!--  End Bottom sheet  -->
+
+    <!--  prefix input style  -->
+    <style name="PrefixTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <!-- Atur ukuran teks awalan (prefix text) di sini -->
+        <item name="prefixTextAppearance">@style/PrefixTextAppearance</item>
+    </style>
+
+    <style name="PrefixTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12sp</item>
+    </style>
 
 </resources>

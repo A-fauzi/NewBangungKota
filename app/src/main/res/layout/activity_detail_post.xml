@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="@dimen/padding_root"
     android:orientation="vertical"
+    android:padding="@dimen/padding_root"
     tools:context=".presentation.ui.detail.DetailPostActivity">
 
 
     <include
         android:id="@+id/item_post"
-        layout="@layout/component_list_community_post"/>
+        layout="@layout/component_list_community_post" />
 
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/item_post"
-        android:layout_above="@id/container_message">
+        android:layout_above="@id/container_message"
+        android:layout_below="@id/item_post">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,64 +28,36 @@
                 android:id="@+id/tv_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Comment 🙌"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/margin_8"
-                android:layout_centerHorizontal="true"/>
+                android:text="Comment 🙌" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_reply"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/tv_comment"
+                android:layout_margin="@dimen/margin_8"
                 android:layout_marginBottom="@dimen/margin_8"
-                tools:listitem="@layout/component_list_reply_post"
-                android:layout_margin="@dimen/margin_8"/>
+                tools:listitem="@layout/component_list_reply_post" />
 
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
-   <LinearLayout
-       android:id="@+id/container_message"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="horizontal"
-       android:layout_alignParentBottom="true">
 
-       <de.hdodenhof.circleimageview.CircleImageView
-           android:id="@+id/iv_current_user_message"
-           android:layout_width="50dp"
-           android:layout_height="50dp"
-           android:src="@drawable/example_profile"
-           android:layout_gravity="center_vertical"/>
 
-       <com.google.android.material.textfield.TextInputLayout
-           android:id="@+id/outline_textfield_comment_message"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_gravity="center_vertical"
-           android:layout_marginStart="@dimen/margin_8"
-           android:layout_marginEnd="@dimen/margin_8"
-           android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
-           app:boxCornerRadiusBottomEnd="15dp"
-           app:boxCornerRadiusBottomStart="15dp"
-           app:boxCornerRadiusTopEnd="15dp"
-           app:boxCornerRadiusTopStart="15dp"
-           app:boxStrokeWidth="0dp"
-           app:boxStrokeWidthFocused="0dp"
-           app:endIconDrawable="@drawable/ic_paper_plane_top"
-           app:endIconMode="custom"
-           app:endIconTint="@color/purple_700"
-           app:hintEnabled="false">
+    <RelativeLayout
+        android:id="@+id/container_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
 
-           <com.google.android.material.textfield.TextInputEditText
-               android:id="@+id/et_post_comment"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:gravity="top"
-               android:hint="Write post..."
-               android:inputType="text|textMultiLine"
-               android:padding="16dp" />
+        <include
+            android:id="@+id/input_reply"
+            layout="@layout/component_layout_input_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-       </com.google.android.material.textfield.TextInputLayout>
-   </LinearLayout>
+    </RelativeLayout>
+
 
 </RelativeLayout>

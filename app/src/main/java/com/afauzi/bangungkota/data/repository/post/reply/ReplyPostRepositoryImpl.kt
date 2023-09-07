@@ -11,9 +11,8 @@ import com.google.firebase.firestore.DocumentSnapshot
 class ReplyPostRepositoryImpl: ReplyPostRepository {
     private val databaseReference = FirebaseDatabase.getInstance().reference
 
-    override fun createReplyPost(data: Post.ReplyPost, postId: String): Task<Void> {
-
-        val postCommentRef = databaseReference.child("comments").child(postId).child(data.id.toString())
+    override fun createReplyPost(data: Post.ReplyPost, postId: String, childParent: String): Task<Void> {
+        val postCommentRef = databaseReference.child(childParent).child(postId).child(data.id.toString())
         return postCommentRef.setValue(data)
     }
 

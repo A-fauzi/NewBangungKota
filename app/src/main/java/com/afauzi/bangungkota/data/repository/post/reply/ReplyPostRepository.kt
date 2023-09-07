@@ -8,6 +8,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.DocumentSnapshot
 
 interface ReplyPostRepository {
-    fun createReplyPost(data: Post.ReplyPost, postId: String): Task<Void>
+    fun createReplyPost(data: Post.ReplyPost, postId: String, childParent: String): Task<Void>
     suspend fun getReplyPost(postId: String, snapshot: (DataSnapshot) -> Unit, error: (DatabaseError) -> Unit): ValueEventListener
 }

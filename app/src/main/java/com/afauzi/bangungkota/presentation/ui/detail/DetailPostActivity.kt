@@ -18,102 +18,118 @@ import com.afauzi.bangungkota.presentation.adapter.AdapterCommentPost
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.afauzi.bangungkota.utils.UniqueIdGenerator
-import com.afauzi.bangungkota.utils.UtilityLibrary
 import com.afauzi.bangungkota.utils.UtilityLibrary.currentDate
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 
+@RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
 class DetailPostActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailPostBinding
     private lateinit var replyPostAdapterCommentPost: AdapterCommentPost
+    private lateinit var auth: FirebaseAuth
+    private var user: FirebaseUser? = null
 
     private val userViewModel: UserViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    private fun init() {
+        auth = FirebaseAuth.getInstance()
+        user = auth.currentUser
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
+        init()
 
-        val receivedData = intent.getParcelableExtra("post_data") as? Post
-        if (receivedData != null) {
-
-            getListComment(receivedData.id)
-
-            lifecycleScope.launch {
-                userViewModel.getUserById(receivedData.uid.toString())
-                    .addOnSuccessListener {
-                        if (it.exists()) {
-                            Glide.with(this@DetailPostActivity)
-                                .load(it.getString("photo"))
-                                .placeholder(R.drawable.image_profile_place_holder)
-                                .error(R.drawable.image_error)
-                                .into(binding.itemPost.itemIvProfile)
-                            binding.itemPost.itemNameUser.text = it.getString("name")
-                            binding.itemPost.itemEmailUser.text = it.getString("email")
-                            binding.itemPost.tvTextPost.text = receivedData.text
-
-                            binding.itemPost.btnMorePost.isVisible = receivedData.uid == user?.uid
-                        } else {
-                            // Handle data not exists
-                        }
-                    }.addOnFailureListener {
-                        // Handle request failure
-                    }
-            }
-
-            binding.outlineTextfieldCommentMessage.setEndIconOnClickListener {
-                val etTextComment = binding.etPostComment
-
-                insertDataPost(
-                    UniqueIdGenerator.generateUniqueId(),
-                    receivedData.id,
-                    user?.uid.toString(),
-                    etTextComment.text.toString().trim(),
-                )
-
-                etTextComment.text?.clear()
-
-                // Di dalam fungsi Anda yang mengirim pesan (setelah pesan berhasil dikirim):
-                val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(etTextComment.windowToken, 0)
-            }
-
-        }
-
+        setDetailDataPost()
 
         Glide.with(this@DetailPostActivity)
             .load(user?.photoUrl)
             .placeholder(R.drawable.image_profile_place_holder)
             .error(R.drawable.image_error)
-            .into(binding.ivCurrentUserMessage)
-
-
-
+            .into(binding.inputReply.ivCurrentUserMessage)
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun insertDataPost(commentId: String, postId: String, currentUserId: String, text: String) {
+    private fun setDetailDataPost() {
+        val receivedData = intent.getParcelableExtra("post_data") as? Post
+
+        if (receivedData != null) {
+
+            getListComment(receivedData.id)
+
+            getUser(receivedData)
+
+
+            binding.inputReply.outlineTextfieldCommentMessage.setEndIconOnClickListener {
+
+                val etTextComment = binding.inputReply.etPostComment
+
+//                insertComment(
+//                    "comments",
+//                    UniqueIdGenerator.generateUniqueId(),
+//                    receivedData.id,
+//                    user?.uid.toString(),
+//                    etTextComment.text.toString().trim(),
+//                )
+
+                Toast.makeText(this, "input parent", Toast.LENGTH_SHORT).show()
+
+                etTextComment.text?.clear()
+
+                // Window input text down
+                val inputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(etTextComment.windowToken, 0)
+            }
+
+        }
+    }
+
+    private fun getUser(receivedData: Post) {
+        lifecycleScope.launch {
+            userViewModel.getUserById(receivedData.uid.toString())
+                .addOnSuccessListener {
+                    if (it.exists()) {
+                        Glide.with(this@DetailPostActivity)
+                            .load(it.getString("photo"))
+                            .placeholder(R.drawable.image_profile_place_holder)
+                            .error(R.drawable.image_error)
+                            .into(binding.itemPost.itemIvProfile)
+                        binding.itemPost.itemNameUser.text = it.getString("name")
+                        binding.itemPost.itemEmailUser.text = it.getString("email")
+                        binding.itemPost.tvTextPost.text = receivedData.text
+
+                        binding.itemPost.btnMorePost.isVisible = receivedData.uid == user?.uid
+                    } else {
+                        // Handle data not exists
+                    }
+                }.addOnFailureListener {
+                    // Handle request failure
+                }
+        }
+    }
+
+    private fun insertComment(
+        childParent: String,
+        commentId: String,
+        postId: String,
+        currentUserId: String,
+        text: String
+    ) {
 
         val data = Post.ReplyPost(commentId, postId, currentUserId, text, currentDate())
 
-        postViewModel.createReplyPost(data, postId)
+        postViewModel.createReplyPost(data, postId, childParent)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     Toast.makeText(this, "success reply", Toast.LENGTH_SHORT).show()
@@ -132,7 +148,7 @@ class DetailPostActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             postViewModel.replyPostData.observe(this@DetailPostActivity) {
-                replyPostAdapterCommentPost = AdapterCommentPost(it) {viewBinding, data ->
+                replyPostAdapterCommentPost = AdapterCommentPost(it) { viewBinding, data ->
 
                     viewBinding.replyPostParent.tvTextPost.text = data.text
 
@@ -144,18 +160,37 @@ class DetailPostActivity : AppCompatActivity() {
                                 Glide.with(this@DetailPostActivity)
                                     .load(user.getString("photo"))
                                     .into(viewBinding.replyPostParent.itemIvProfile)
-                                viewBinding.replyPostParent.itemNameUser.text = user.getString("name")
+                                viewBinding.replyPostParent.itemNameUser.text =
+                                    user.getString("name")
+
                                 viewBinding.replyPostParent.btnComment.setOnClickListener {
-                                    Toast.makeText(this@DetailPostActivity, "clicked", Toast.LENGTH_SHORT).show()
+
+                                    binding.inputReply.outlineTextfieldCommentMessage.isVisible = true
+
+                                    // Berikan fokus ke EditText
+                                    binding.inputReply.etPostComment.requestFocus()
+
+                                    // Tampilkan keyboard secara otomatis
+                                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                    imm.showSoftInput(
+                                        binding.inputReply.etPostComment,
+                                        InputMethodManager.SHOW_IMPLICIT
+                                    )
+
+                                    binding.inputReply.etPostComment.setText(user.getString("name"))
                                 }
 
                             }
-                            .addOnFailureListener {  }
+                            .addOnFailureListener { }
                     }
                 }
 
                 binding.rvReply.apply {
-                    layoutManager = LinearLayoutManager(this@DetailPostActivity, LinearLayoutManager.VERTICAL, false)
+                    layoutManager = LinearLayoutManager(
+                        this@DetailPostActivity,
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    )
                     adapter = replyPostAdapterCommentPost
                 }
 

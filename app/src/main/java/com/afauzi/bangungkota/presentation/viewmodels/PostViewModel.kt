@@ -31,8 +31,8 @@ class PostViewModel @Inject constructor(
     }
 
     // REPLY POST
-    fun createReplyPost(data: Post.ReplyPost, postId: String): Task<Void> {
-        return replyPostRepository.createReplyPost(data, postId)
+    fun createReplyPost(data: Post.ReplyPost, postId: String, childParent: String): Task<Void> {
+        return replyPostRepository.createReplyPost(data, postId, childParent)
     }
 
     private val _replyPostData = MutableLiveData<List<Post.ReplyPost>>()
