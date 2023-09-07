@@ -2,6 +2,7 @@ package com.afauzi.bangungkota.presentation.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afauzi.bangungkota.databinding.ComponentListEventBinding
 import com.afauzi.bangungkota.domain.model.Event
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.skydoves.transformationlayout.TransformationLayout
 
 class AdapterPagingEvent(private val context: Context, private val listenerAdapterEvent: ListenerAdapterEvent): PagingDataAdapter<Event, AdapterPagingEvent.EventViewHolder>(
@@ -17,6 +19,12 @@ class AdapterPagingEvent(private val context: Context, private val listenerAdapt
 
     inner class EventViewHolder(private val binding: ComponentListEventBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: Event) {
+            val auth = FirebaseAuth.getInstance()
+            val user = auth.currentUser
+
+            if (event.createdBy != user?.uid) binding.btnMorePost.visibility = View.GONE
+
+
             binding.itemTitle.text = event.title
             binding.itemAddress.text = event.address
             binding.itemDate.text = event.date
