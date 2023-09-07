@@ -26,11 +26,11 @@ class DetailPostActivity : AppCompatActivity() {
         binding = ActivityDetailPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+
         val receivedData = intent.getParcelableExtra("post_data") as? Post
         if (receivedData != null) {
-
-            val auth = FirebaseAuth.getInstance()
-            val user = auth.currentUser
 
             lifecycleScope.launch {
                 userViewModel.getUserById(receivedData.uid.toString())
@@ -53,7 +53,16 @@ class DetailPostActivity : AppCompatActivity() {
                         // Handle request failure
                     }
             }
+
+
         }
+
+
+        Glide.with(this@DetailPostActivity)
+            .load(user?.photoUrl)
+            .placeholder(R.drawable.image_profile_place_holder)
+            .error(R.drawable.image_error)
+            .into(binding.ivCurrentUserMessage)
     }
 
 
