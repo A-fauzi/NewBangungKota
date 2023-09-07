@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,7 @@ import com.afauzi.bangungkota.utils.UtilityLibrary.currentDate
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.collection.LLRBNode
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -70,26 +72,28 @@ class DetailPostActivity : AppCompatActivity() {
             getUser(receivedData)
 
 
-            binding.inputReply.outlineTextfieldCommentMessage.setEndIconOnClickListener {
+            if (binding.inputReply.outlineTextfieldCommentMessage.prefixText == null) {
+                binding.inputReply.outlineTextfieldCommentMessage.setEndIconOnClickListener {
 
-                val etTextComment = binding.inputReply.etPostComment
+                    val etTextComment = binding.inputReply.etPostComment
 
-//                insertComment(
-//                    "comments",
-//                    UniqueIdGenerator.generateUniqueId(),
-//                    receivedData.id,
-//                    user?.uid.toString(),
-//                    etTextComment.text.toString().trim(),
-//                )
+                insertComment(
+                    "comments",
+                    UniqueIdGenerator.generateUniqueId(),
+                    receivedData.id,
+                    user?.uid.toString(),
+                    etTextComment.text.toString().trim(),
+                )
 
-                Toast.makeText(this, "input parent", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "input parent", Toast.LENGTH_SHORT).show()
 
-                etTextComment.text?.clear()
+                    etTextComment.text?.clear()
 
-                // Window input text down
-                val inputMethodManager =
-                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(etTextComment.windowToken, 0)
+                    // Window input text down
+                    val inputMethodManager =
+                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow(etTextComment.windowToken, 0)
+                }
             }
 
         }
@@ -177,7 +181,10 @@ class DetailPostActivity : AppCompatActivity() {
                                         InputMethodManager.SHOW_IMPLICIT
                                     )
 
-                                    binding.inputReply.etPostComment.setText(user.getString("name"))
+                                    binding.inputReply.outlineTextfieldCommentMessage.prefixText = user.getString("name")
+                                    if (binding.inputReply.outlineTextfieldCommentMessage.prefixText != null) {
+                                        Toast.makeText(this@DetailPostActivity, "Buat nanti store data child comment", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
 
                             }
