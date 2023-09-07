@@ -16,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingStart="@dimen/padding_8"
-        android:paddingTop="@dimen/padding_root"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:ignore="RtlSymmetry">
 
