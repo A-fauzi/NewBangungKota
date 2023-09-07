@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afauzi.bangungkota.databinding.ComponentListEventBinding
 import com.afauzi.bangungkota.domain.model.Event
 import com.bumptech.glide.Glide
+import com.skydoves.transformationlayout.TransformationLayout
 
 class AdapterPagingEvent(private val context: Context, private val listenerAdapterEvent: ListenerAdapterEvent): PagingDataAdapter<Event, AdapterPagingEvent.EventViewHolder>(
     EventDiffCallback
@@ -23,7 +24,7 @@ class AdapterPagingEvent(private val context: Context, private val listenerAdapt
                 .load(event.image)
                 .into(binding.itemImage)
             binding.cvItem.setOnClickListener {
-                listenerAdapterEvent.onClickItemDetail(event)
+                listenerAdapterEvent.onClickItemDetail(event, binding.transformLayout)
             }
             binding.btnMorePost.setOnClickListener {
                 listenerAdapterEvent.clickItemMore(event)
@@ -58,7 +59,7 @@ class AdapterPagingEvent(private val context: Context, private val listenerAdapt
     }
 
     interface ListenerAdapterEvent {
-        fun onClickItemDetail(data: Event)
+        fun onClickItemDetail(data: Event, transformLayoutItem: TransformationLayout)
         fun clickItemMore(data: Event)
     }
 }

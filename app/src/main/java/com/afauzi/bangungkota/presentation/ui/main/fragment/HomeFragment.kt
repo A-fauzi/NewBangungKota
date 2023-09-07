@@ -45,6 +45,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.skydoves.transformationlayout.TransformationCompat
+import com.skydoves.transformationlayout.TransformationLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -188,10 +189,11 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
 
     }
 
-    override fun onClickItemDetail(data: Event) {
+    override fun onClickItemDetail(data: Event, transformLayoutItem: TransformationLayout) {
         val intent = Intent(requireActivity(), InfoDetailEvent::class.java)
         intent.putExtra("event_data", data) // Mengirim objek Event sebagai extra
-        startActivity(intent)
+        TransformationCompat.startActivity(transformLayoutItem, intent)
+//        startActivity(intent)
     }
 
     override fun clickItemMore(data: Event) {

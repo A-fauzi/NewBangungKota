@@ -13,11 +13,12 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.skydoves.transformationlayout.TransformationAppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class InfoDetailEvent : AppCompatActivity() {
+class InfoDetailEvent : TransformationAppCompatActivity() {
 
     private lateinit var binding: ActivityInfoDetailEventBinding
     private lateinit var auth: FirebaseAuth
