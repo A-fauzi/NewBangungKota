@@ -134,14 +134,17 @@ class DetailPostActivity : AppCompatActivity() {
         // Membuat daftar kosong untuk menyimpan data
         val commentPost = mutableListOf<Post.ReplyPost>()
         val commentAdapter = AdapterCommentPost(commentPost) {viewBinding, data ->
-            viewBinding.tvTextPost.text = data.text
+            viewBinding.replyPostParent.tvTextPost.text = data.text
             lifecycleScope.launch {
                 userViewModel.getUserById(data.userId.toString())
                     .addOnSuccessListener {
                         Glide.with(this@DetailPostActivity)
                             .load(it.getString("photo"))
-                            .into(viewBinding.itemIvProfile)
-                        viewBinding.itemNameUser.text = it.getString("name")
+                            .into(viewBinding.replyPostParent.itemIvProfile)
+                        viewBinding.replyPostParent.itemNameUser.text = it.getString("name")
+                        viewBinding.replyPostParent.btnComment.setOnClickListener {
+                            Toast.makeText(this@DetailPostActivity, "clicked", Toast.LENGTH_SHORT).show()
+                        }
                     }
                     .addOnFailureListener {  }
             }
