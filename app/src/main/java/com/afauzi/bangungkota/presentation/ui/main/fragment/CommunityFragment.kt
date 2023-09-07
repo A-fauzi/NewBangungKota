@@ -1,5 +1,6 @@
 package com.afauzi.bangungkota.presentation.ui.main.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.afauzi.bangungkota.databinding.ComponentListCommunityPostBinding
 import com.afauzi.bangungkota.databinding.FragmentCommunityBinding
 import com.afauzi.bangungkota.domain.model.Post
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingPost
+import com.afauzi.bangungkota.presentation.ui.camera.CameraStoryActivity
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.afauzi.bangungkota.utils.CustomViews.toast
@@ -60,6 +62,10 @@ class CommunityFragment : Fragment() {
         setTopAppBar()
         onClickViews()
         setUpRecyclerViewAdapter()
+
+        binding.cvCameraStory.setOnClickListener {
+            startActivity(Intent(requireActivity(), CameraStoryActivity::class.java))
+        }
     }
 
     private fun bindDataPostToViews(

@@ -9,4 +9,6 @@
     <string name="set_data_event">Set Date Event</string>
     <string name="set_time_event">Set Time Event</string>
     <string name="event_name">Event Name</string>
+    <string name="stop_capture">stop capture</string>
+    <string name="start_capture">start capture</string>
 </resources>
