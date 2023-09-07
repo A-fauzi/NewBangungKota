@@ -126,6 +126,8 @@ dependencies {
     // OnBoarding
     implementation 'com.cuneytayyildiz:onboarder:2.0.0'
 
+    implementation("com.github.skydoves:transformationlayout:1.1.2")
+
 
 }
 

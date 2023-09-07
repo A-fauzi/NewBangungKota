@@ -44,6 +44,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.skydoves.transformationlayout.TransformationCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -81,7 +82,8 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
             adapter = adapterPagingEvent
         }
         binding.fabCreateEvent.setOnClickListener {
-            startActivity(Intent(requireActivity(), CreateEventActivity::class.java))
+            val intent = Intent(requireActivity(), CreateEventActivity::class.java)
+            TransformationCompat.startActivity(binding.transformLayout, intent)
         }
     }
 

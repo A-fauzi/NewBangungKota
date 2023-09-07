@@ -30,7 +30,6 @@ class InfoDetailEvent : AppCompatActivity() {
         binding = ActivityInfoDetailEventBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         binding.toolAppBar.topAppBar.title = "Event Detal ✨"
         binding.toolAppBar.topAppBar.menu.findItem(R.id.user).isVisible = false
 

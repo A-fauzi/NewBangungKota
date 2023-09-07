@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:id="@+id/drawerLayout"
-    tools:openDrawer="start"
     tools:context=".presentation.ui.main.fragment.HomeFragment">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -120,15 +119,22 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:contentDescription="TODO"
-            android:id="@+id/fab_create_event"
-            android:layout_gravity="bottom|end"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_16"
+        <com.skydoves.transformationlayout.TransformationLayout
+            android:id="@+id/transform_layout"
             android:layout_width="wrap_content"
-            android:src="@drawable/ic_baseline_add_24"
-            app:tint="@color/white" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            app:transformation_duration="550">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:contentDescription="TODO"
+                android:id="@+id/fab_create_event"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_16"
+                android:layout_width="wrap_content"
+                android:src="@drawable/ic_baseline_add_24"
+                app:tint="@color/white" />
+        </com.skydoves.transformationlayout.TransformationLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
