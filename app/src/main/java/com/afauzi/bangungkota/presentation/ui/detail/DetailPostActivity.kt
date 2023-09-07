@@ -18,6 +18,8 @@ import com.afauzi.bangungkota.presentation.adapter.AdapterCommentPost
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.afauzi.bangungkota.utils.UniqueIdGenerator
+import com.afauzi.bangungkota.utils.UtilityLibrary
+import com.afauzi.bangungkota.utils.UtilityLibrary.currentDate
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -34,6 +36,7 @@ import java.util.*
 class DetailPostActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailPostBinding
+    private lateinit var replyPostAdapterCommentPost: AdapterCommentPost
 
     private val userViewModel: UserViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
@@ -107,10 +110,8 @@ class DetailPostActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun insertDataPost(commentId: String, postId: String, currentUserId: String, text: String) {
-        val tanggalSaatIni = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val tanggalDalamFormatQuery = tanggalSaatIni.format(formatter)
-        val data = Post.ReplyPost(commentId, postId, currentUserId, text, tanggalDalamFormatQuery)
+
+        val data = Post.ReplyPost(commentId, postId, currentUserId, text, currentDate())
 
         postViewModel.createReplyPost(data, postId)
             .addOnCompleteListener {
@@ -125,82 +126,43 @@ class DetailPostActivity : AppCompatActivity() {
             }
 
 
-
-//        val databaseReference = FirebaseDatabase.getInstance().reference
-
-//
-//        // Specify the database reference where you want to store the data
-//        val postCommentRef = databaseReference.child("comments").child(postId).child(data.id.toString())
-//
-//        postCommentRef.setValue(data)
-//            .addOnCompleteListener {
-//                if (it.isSuccessful) {
-//                    Toast.makeText(this, "success reply", Toast.LENGTH_SHORT).show()
-//                } else {
-//                    Toast.makeText(this, "not success reply", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//            .addOnFailureListener {
-//                Toast.makeText(this, "error ${it.message}", Toast.LENGTH_SHORT).show()
-//            }
-
     }
 
     private fun getListComment(postId: String) {
-        val databaseReference = FirebaseDatabase.getInstance().reference
-        val postCommentRef = databaseReference.child("comments").child(postId)
 
-        // Membuat daftar kosong untuk menyimpan data
-        val commentPost = mutableListOf<Post.ReplyPost>()
-        val commentAdapter = AdapterCommentPost(commentPost) {viewBinding, data ->
-            viewBinding.replyPostParent.tvTextPost.text = data.text
-            lifecycleScope.launch {
-                userViewModel.getUserById(data.userId.toString())
-                    .addOnSuccessListener {
-                        Glide.with(this@DetailPostActivity)
-                            .load(it.getString("photo"))
-                            .into(viewBinding.replyPostParent.itemIvProfile)
-                        viewBinding.replyPostParent.itemNameUser.text = it.getString("name")
-                        viewBinding.replyPostParent.btnComment.setOnClickListener {
-                            Toast.makeText(this@DetailPostActivity, "clicked", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    .addOnFailureListener {  }
-            }
-        }
-        binding.rvReply.apply {
-            layoutManager = LinearLayoutManager(this@DetailPostActivity, LinearLayoutManager.VERTICAL, false)
-            adapter = commentAdapter
-        }
+        lifecycleScope.launch {
+            postViewModel.replyPostData.observe(this@DetailPostActivity) {
+                replyPostAdapterCommentPost = AdapterCommentPost(it) {viewBinding, data ->
 
-        postCommentRef.addValueEventListener( object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // Bersihkan daftar sebelum mengisi ulang
-                commentPost.clear()
+                    viewBinding.replyPostParent.tvTextPost.text = data.text
 
-                // Mengambil data dari snapshot
-                for (comment in snapshot.children) {
-                    // Konversi snapshot menjadi objek UserData
-                    val dataComment = comment.getValue(Post.ReplyPost::class.java)
+                    lifecycleScope.launch {
 
-                    // Jika userData tidak null, tambahkan ke daftar
-                    dataComment?.let {
-                        commentPost.add(it)
+                        userViewModel.getUserById(data.userId.toString())
+                            .addOnSuccessListener { user ->
+
+                                Glide.with(this@DetailPostActivity)
+                                    .load(user.getString("photo"))
+                                    .into(viewBinding.replyPostParent.itemIvProfile)
+                                viewBinding.replyPostParent.itemNameUser.text = user.getString("name")
+                                viewBinding.replyPostParent.btnComment.setOnClickListener {
+                                    Toast.makeText(this@DetailPostActivity, "clicked", Toast.LENGTH_SHORT).show()
+                                }
+
+                            }
+                            .addOnFailureListener {  }
                     }
                 }
 
-                // Sekarang userList berisi daftar objek UserData dari database
-                // Lakukan apa pun yang diperlukan dengan daftar ini, seperti menampilkannya di UI
+                binding.rvReply.apply {
+                    layoutManager = LinearLayoutManager(this@DetailPostActivity, LinearLayoutManager.VERTICAL, false)
+                    adapter = replyPostAdapterCommentPost
+                }
 
-                commentPost.reverse()
-                commentAdapter.notifyDataSetChanged()
+                replyPostAdapterCommentPost.notifyDataSetChanged()
             }
+            postViewModel.getReplyPostList(postId)
+        }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Handle kesalahan jika ada
-            }
-
-
-        })
     }
 }

@@ -1,5 +1,7 @@
 package com.afauzi.bangungkota.presentation.viewmodels
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -31,5 +33,35 @@ class PostViewModel @Inject constructor(
     // REPLY POST
     fun createReplyPost(data: Post.ReplyPost, postId: String): Task<Void> {
         return replyPostRepository.createReplyPost(data, postId)
+    }
+
+    private val _replyPostData = MutableLiveData<List<Post.ReplyPost>>()
+    val replyPostData: LiveData<List<Post.ReplyPost>> get() = _replyPostData
+
+    suspend fun getReplyPostList(postId: String) {
+        val commentPost = mutableListOf<Post.ReplyPost>()
+        replyPostRepository.getReplyPost(postId, {
+            // Bersihkan daftar sebelum mengisi ulang
+            commentPost.clear()
+
+            // Mengambil data dari snapshot
+            for (comment in it.children) {
+                // Konversi snapshot menjadi objek UserData
+                val dataComment = comment.getValue(Post.ReplyPost::class.java)
+
+                // Jika userData tidak null, tambahkan ke daftar
+                dataComment?.let { replyPost ->
+                    commentPost.add(replyPost)
+                }
+            }
+
+            commentPost.reverse()
+
+            // Mengupdate _replyPostData LiveData dengan data yang baru
+            _replyPostData.postValue(commentPost)
+
+        }){
+
+        }
     }
 }
