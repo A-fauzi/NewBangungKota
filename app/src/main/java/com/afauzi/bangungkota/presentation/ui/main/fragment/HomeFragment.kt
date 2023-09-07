@@ -193,7 +193,6 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
         val intent = Intent(requireActivity(), InfoDetailEvent::class.java)
         intent.putExtra("event_data", data) // Mengirim objek Event sebagai extra
         TransformationCompat.startActivity(transformLayoutItem, intent)
-//        startActivity(intent)
     }
 
     override fun clickItemMore(data: Event) {

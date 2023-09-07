@@ -85,6 +85,7 @@
                 android:padding="@dimen/padding_8"/>
 
             <ImageButton
+                android:id="@+id/btn_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/comment_alt"

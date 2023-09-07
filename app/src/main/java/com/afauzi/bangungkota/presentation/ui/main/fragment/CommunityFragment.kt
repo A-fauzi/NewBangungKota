@@ -18,7 +18,9 @@ import com.afauzi.bangungkota.databinding.ComponentListCommunityPostBinding
 import com.afauzi.bangungkota.databinding.FragmentCommunityBinding
 import com.afauzi.bangungkota.domain.model.Post
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingPost
+import com.afauzi.bangungkota.presentation.ui.DetailPostActivity
 import com.afauzi.bangungkota.presentation.ui.camera.CameraStoryActivity
+import com.afauzi.bangungkota.presentation.ui.detail.InfoDetailEvent
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.afauzi.bangungkota.utils.CustomViews.toast
@@ -28,6 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
+import com.skydoves.transformationlayout.TransformationCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -160,6 +163,12 @@ class CommunityFragment : Fragment() {
                     }
             }
             dialog.show()
+        }
+
+        componentListCommunityPostBinding.btnComment.setOnClickListener {
+            val intent = Intent(requireActivity(), DetailPostActivity::class.java)
+            intent.putExtra("post_data", post) // Mengirim objek Post sebagai extra
+            startActivity(intent)
         }
     }
 
