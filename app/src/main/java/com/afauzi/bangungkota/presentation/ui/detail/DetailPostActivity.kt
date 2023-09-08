@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityDetailPostBinding
 import com.afauzi.bangungkota.domain.model.Post
+import com.afauzi.bangungkota.presentation.adapter.AdapterChildCommentPost
 import com.afauzi.bangungkota.presentation.adapter.AdapterCommentPost
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
@@ -34,8 +36,10 @@ class DetailPostActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailPostBinding
     private lateinit var replyPostAdapterCommentPost: AdapterCommentPost
+    private lateinit var replyPostAdapterCommentPostChildCommentPost: AdapterChildCommentPost
     private lateinit var auth: FirebaseAuth
     private var user: FirebaseUser? = null
+    private var replyParentId = ""
 
     private val userViewModel: UserViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
@@ -67,25 +71,19 @@ class DetailPostActivity : AppCompatActivity() {
 
         if (receivedData != null) {
 
-            getListComment(receivedData.id)
+            binding.inputReply.outlineTextfieldCommentMessage.setEndIconOnClickListener {
 
-            getUser(receivedData)
-
-
-            if (binding.inputReply.outlineTextfieldCommentMessage.prefixText == null) {
-                binding.inputReply.outlineTextfieldCommentMessage.setEndIconOnClickListener {
+                if (binding.inputReply.outlineTextfieldCommentMessage.prefixText.isNullOrEmpty() || binding.inputReply.outlineTextfieldCommentMessage.prefixText.isNullOrBlank()) {
 
                     val etTextComment = binding.inputReply.etPostComment
 
-                insertComment(
-                    "comments",
-                    UniqueIdGenerator.generateUniqueId(),
-                    receivedData.id,
-                    user?.uid.toString(),
-                    etTextComment.text.toString().trim(),
-                )
-
-                    Toast.makeText(this, "input parent", Toast.LENGTH_SHORT).show()
+                    insertComment(
+                        "comments",
+                        UniqueIdGenerator.generateUniqueId(),
+                        receivedData.id,
+                        user?.uid.toString(),
+                        etTextComment.text.toString().trim(),
+                    )
 
                     etTextComment.text?.clear()
 
@@ -93,8 +91,34 @@ class DetailPostActivity : AppCompatActivity() {
                     val inputMethodManager =
                         getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     inputMethodManager.hideSoftInputFromWindow(etTextComment.windowToken, 0)
+
+                } else {
+                    val etTextComment = binding.inputReply.etPostComment.text.toString().trim()
+                    val prefix = binding.inputReply.outlineTextfieldCommentMessage.prefixText
+                    insertComment(
+                        "comments_child",
+                        UniqueIdGenerator.generateUniqueId(),
+                        replyParentId,
+                        user?.uid.toString(),
+                        etTextComment,
+                    )
+
+                    binding.inputReply.etPostComment.text?.clear()
+
+                    // Window input text down
+                    val inputMethodManager =
+                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow(
+                        binding.inputReply.etPostComment.windowToken,
+                        0
+                    )
+
                 }
+
             }
+
+            getListComment(receivedData.id)
+            getUser(receivedData)
 
         }
     }
@@ -149,10 +173,45 @@ class DetailPostActivity : AppCompatActivity() {
     }
 
     private fun getListComment(postId: String) {
-
         lifecycleScope.launch {
-            postViewModel.replyPostData.observe(this@DetailPostActivity) {
-                replyPostAdapterCommentPost = AdapterCommentPost(it) { viewBinding, data ->
+
+            postViewModel.replyPostData.observe(this@DetailPostActivity) { tes ->
+
+                replyPostAdapterCommentPost = AdapterCommentPost(tes) { viewBinding, data ->
+
+                    lifecycleScope.launch {
+                        postViewModel.replyPostDataChild.observe(this@DetailPostActivity) {
+                            replyPostAdapterCommentPostChildCommentPost = AdapterChildCommentPost(it) {viewBindChild, dataChild ->
+
+                                lifecycleScope.launch {
+
+                                    userViewModel.getUserById(dataChild.userId.toString())
+                                        .addOnSuccessListener { user ->
+
+                                            Glide.with(this@DetailPostActivity)
+                                                .load(user.getString("photo"))
+                                                .into(viewBindChild.itemIvProfile)
+
+                                            viewBindChild.itemNameUser.text = user.getString("name")
+
+                                            viewBindChild.tvTextPost.text = dataChild.text
+                                            viewBindChild.btnComment.isVisible = false
+                                            viewBindChild.btnShare.isVisible = false
+                                            viewBindChild.tvShare.isVisible = false
+
+                                        }
+                                        .addOnFailureListener { }
+                                }
+
+                            }
+                            viewBinding.rvReplyPostChild.apply {
+                                layoutManager = LinearLayoutManager(this@DetailPostActivity, LinearLayoutManager.VERTICAL, false)
+                                adapter = replyPostAdapterCommentPostChildCommentPost
+                            }
+                            replyPostAdapterCommentPostChildCommentPost.notifyDataSetChanged()
+                        }
+                        postViewModel.getReplyPostListChild("comments_child", data.id.toString())
+                    }
 
                     viewBinding.replyPostParent.tvTextPost.text = data.text
 
@@ -169,22 +228,23 @@ class DetailPostActivity : AppCompatActivity() {
 
                                 viewBinding.replyPostParent.btnComment.setOnClickListener {
 
-                                    binding.inputReply.outlineTextfieldCommentMessage.isVisible = true
+                                    binding.inputReply.outlineTextfieldCommentMessage.isVisible =
+                                        true
 
                                     // Berikan fokus ke EditText
                                     binding.inputReply.etPostComment.requestFocus()
 
                                     // Tampilkan keyboard secara otomatis
-                                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                    val imm =
+                                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                                     imm.showSoftInput(
                                         binding.inputReply.etPostComment,
                                         InputMethodManager.SHOW_IMPLICIT
                                     )
 
-                                    binding.inputReply.outlineTextfieldCommentMessage.prefixText = user.getString("name")
-                                    if (binding.inputReply.outlineTextfieldCommentMessage.prefixText != null) {
-                                        Toast.makeText(this@DetailPostActivity, "Buat nanti store data child comment", Toast.LENGTH_SHORT).show()
-                                    }
+                                    binding.inputReply.outlineTextfieldCommentMessage.prefixText =
+                                        user.getString("name")
+                                    replyParentId = data.id.toString()
                                 }
 
                             }
@@ -203,7 +263,7 @@ class DetailPostActivity : AppCompatActivity() {
 
                 replyPostAdapterCommentPost.notifyDataSetChanged()
             }
-            postViewModel.getReplyPostList(postId)
+            postViewModel.getReplyPostList("comments", postId)
         }
 
     }

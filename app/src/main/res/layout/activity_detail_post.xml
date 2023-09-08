@@ -35,9 +35,11 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_reply"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/tv_comment"
-                android:layout_margin="@dimen/margin_8"
+                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginEnd="@dimen/margin_8"
                 android:layout_marginBottom="@dimen/margin_8"
                 tools:listitem="@layout/component_list_reply_post" />
 

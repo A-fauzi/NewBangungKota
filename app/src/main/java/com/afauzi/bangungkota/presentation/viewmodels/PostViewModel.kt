@@ -38,9 +38,9 @@ class PostViewModel @Inject constructor(
     private val _replyPostData = MutableLiveData<List<Post.ReplyPost>>()
     val replyPostData: LiveData<List<Post.ReplyPost>> get() = _replyPostData
 
-    suspend fun getReplyPostList(postId: String) {
+    suspend fun getReplyPostList(childParent: String, postId: String) {
         val commentPost = mutableListOf<Post.ReplyPost>()
-        replyPostRepository.getReplyPost(postId, {
+        replyPostRepository.getReplyPost(childParent, postId, {
             // Bersihkan daftar sebelum mengisi ulang
             commentPost.clear()
 
@@ -59,6 +59,34 @@ class PostViewModel @Inject constructor(
 
             // Mengupdate _replyPostData LiveData dengan data yang baru
             _replyPostData.postValue(commentPost)
+
+        }){
+
+        }
+    }
+
+    private val _replyPostDataChild = MutableLiveData<List<Post.ReplyPost>>()
+    val replyPostDataChild: LiveData<List<Post.ReplyPost>> get() = _replyPostDataChild
+
+    suspend fun getReplyPostListChild(childParent: String, postId: String) {
+        val commentPostChild = mutableListOf<Post.ReplyPost>()
+        replyPostRepository.getReplyPost(childParent, postId, {
+            // Bersihkan daftar sebelum mengisi ulang
+            commentPostChild.clear()
+
+            // Mengambil data dari snapshot
+            for (comment in it.children) {
+                // Konversi snapshot menjadi objek UserData
+                val dataComment = comment.getValue(Post.ReplyPost::class.java)
+
+                // Jika userData tidak null, tambahkan ke daftar
+                dataComment?.let { replyPost ->
+                    commentPostChild.add(replyPost)
+                }
+            }
+
+            // Mengupdate _replyPostData LiveData dengan data yang baru
+            _replyPostDataChild.postValue(commentPostChild)
 
         }){
 

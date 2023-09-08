@@ -16,8 +16,8 @@ class ReplyPostRepositoryImpl: ReplyPostRepository {
         return postCommentRef.setValue(data)
     }
 
-    override suspend fun getReplyPost(postId: String, snapshot: (DataSnapshot) -> Unit, error: (DatabaseError) -> Unit): ValueEventListener {
-        val postCommentRef = databaseReference.child("comments").child(postId)
+    override suspend fun getReplyPost(childParent: String, postId: String, snapshot: (DataSnapshot) -> Unit, error: (DatabaseError) -> Unit): ValueEventListener {
+        val postCommentRef = databaseReference.child(childParent).child(postId)
         return postCommentRef.addValueEventListener( object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot(snapshot)

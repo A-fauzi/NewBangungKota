@@ -9,5 +9,5 @@ import com.google.firebase.firestore.DocumentSnapshot
 
 interface ReplyPostRepository {
     fun createReplyPost(data: Post.ReplyPost, postId: String, childParent: String): Task<Void>
-    suspend fun getReplyPost(postId: String, snapshot: (DataSnapshot) -> Unit, error: (DatabaseError) -> Unit): ValueEventListener
+    suspend fun getReplyPost(childParent: String, postId: String, snapshot: (DataSnapshot) -> Unit, error: (DatabaseError) -> Unit): ValueEventListener
 }
