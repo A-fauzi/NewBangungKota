@@ -13,16 +13,35 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(private val userRepository: UserRepository): ViewModel() {
 
-    private val _userCreateEvent = MutableLiveData<Int>()
-    val userCreateEvent: LiveData<Int> get() = _userCreateEvent
-    fun sizeCreateEvent(size: Int) {
-        _userCreateEvent.value = size
+    private val _user = MutableLiveData<User>()
+    val userLiveData: LiveData<User> get() = _user
+
+    suspend fun getUserByIdLiveData(userId: String) {
+        userRepository.getUserById(userId)
+            .addOnSuccessListener {
+                if (it.exists()) {
+
+                    val data = User(
+                        uid = it.getString("uid").toString(),
+                        name = it.getString("name").toString(),
+                        email = it.getString("email").toString(),
+                        photo = it.getString("photo").toString(),
+                    )
+                    _user.value = data
+                } else {
+                    // data not exists
+                }
+            }
+            .addOnFailureListener {
+                // on failure get user
+            }
     }
 
     fun saveData(documentId: String, data: User): Task<Void> {
         return userRepository.saveUser(documentId, data)
     }
 
+    // Nanti ini hapus, karna sudah digantikan livedata
     suspend fun getUserById(documentId: String): Task<DocumentSnapshot> {
         return userRepository.getUserById(documentId)
     }

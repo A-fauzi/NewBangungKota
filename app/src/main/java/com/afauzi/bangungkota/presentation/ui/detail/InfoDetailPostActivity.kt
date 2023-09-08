@@ -1,23 +1,16 @@
 package com.afauzi.bangungkota.presentation.ui.detail
 
-import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityDetailPostBinding
 import com.afauzi.bangungkota.domain.model.Post
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
-import com.afauzi.bangungkota.utils.UniqueIdGenerator
-import com.afauzi.bangungkota.utils.UtilityLibrary.currentDate
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -47,12 +40,46 @@ class InfoDetailPostActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         init()
+        setDetailDataPost()
 
+
+        // Image current user in input column
         Glide.with(this@InfoDetailPostActivity)
             .load(user?.photoUrl)
             .placeholder(R.drawable.image_profile_place_holder)
             .error(R.drawable.image_error)
             .into(binding.inputReply.ivCurrentUserMessage)
 
+    }
+
+    private fun setDetailDataPost() {
+        val post = intent.getParcelableExtra("post_data") as? Post
+
+        if (post != null) {
+
+            // Get user live data
+            userDetailPostLiveData(post)
+
+            binding.itemPost.tvTextPost.text = post.text
+
+        } else {
+            // if data null
+        }
+    }
+
+    private fun userDetailPostLiveData(post: Post) {
+        lifecycleScope.launch {
+            userViewModel.userLiveData.observe(this@InfoDetailPostActivity) {
+                Glide.with(this@InfoDetailPostActivity)
+                    .load(it.photo)
+                    .placeholder(R.drawable.image_profile_place_holder)
+                    .error(R.drawable.image_error)
+                    .into(binding.itemPost.itemIvProfile)
+
+                binding.itemPost.itemNameUser.text = it.name
+                binding.itemPost.itemEmailUser.text = it.email
+            }
+            userViewModel.getUserByIdLiveData(post.uid.toString())
+        }
     }
 }
