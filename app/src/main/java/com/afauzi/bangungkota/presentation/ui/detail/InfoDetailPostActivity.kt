@@ -66,6 +66,12 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
         // show if start activity
         inputBehaviour(inputCommentMessageEdiText, true)
+
+        inputCommentMessageLayout.setEndIconOnClickListener {
+            Toast.makeText(this, "post send", Toast.LENGTH_SHORT).show()
+            inputBehaviour(inputCommentMessageEdiText, false)
+            inputCommentMessageEdiText.text.clear()
+        }
     }
 
     private fun inputBehaviour(editTextView: EditText, isShowing: Boolean) {
@@ -77,13 +83,6 @@ class InfoDetailPostActivity : AppCompatActivity() {
             inputMethodManager.showSoftInput( editTextView, InputMethodManager.SHOW_IMPLICIT)
         } else {
             inputMethodManager.hideSoftInputFromWindow(editTextView.windowToken, 0)
-        }
-
-        inputCommentMessageLayout.setEndIconOnClickListener {
-            Toast.makeText(this, "post send", Toast.LENGTH_SHORT).show()
-
-            inputMethodManager.hideSoftInputFromWindow(editTextView.windowToken, 0)
-            editTextView.text.clear()
         }
     }
 
