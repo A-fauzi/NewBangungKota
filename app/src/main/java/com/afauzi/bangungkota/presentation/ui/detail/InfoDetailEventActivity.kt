@@ -1,6 +1,5 @@
 package com.afauzi.bangungkota.presentation.ui.detail
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -18,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class InfoDetailEvent : TransformationAppCompatActivity() {
+class InfoDetailEventActivity : TransformationAppCompatActivity() {
 
     private lateinit var binding: ActivityInfoDetailEventBinding
     private lateinit var auth: FirebaseAuth
@@ -51,7 +50,7 @@ class InfoDetailEvent : TransformationAppCompatActivity() {
                     .addOnSuccessListener {
                         if (it.exists()) {
 
-                            Glide.with(this@InfoDetailEvent)
+                            Glide.with(this@InfoDetailEventActivity)
                                 .load(it.getString("photo"))
                                 .placeholder(R.drawable.image_placeholder)
                                 .error(R.drawable.image_error)
@@ -60,7 +59,7 @@ class InfoDetailEvent : TransformationAppCompatActivity() {
                             binding.tvUsername.text = it.getString("name")
                             binding.tvUserEmail.text = it.getString("email")
                             binding.tvUserAddress.text = receivedData.address
-                            Glide.with(this@InfoDetailEvent)
+                            Glide.with(this@InfoDetailEventActivity)
                                 .load(receivedData.image)
                                 .placeholder(R.drawable.image_profile_place_holder)
                                 .error(R.drawable.image_error)
@@ -71,7 +70,7 @@ class InfoDetailEvent : TransformationAppCompatActivity() {
 
                         } else {
                             Toast.makeText(
-                                this@InfoDetailEvent,
+                                this@InfoDetailEventActivity,
                                 "Data tidak ditemukan!",
                                 Toast.LENGTH_SHORT
                             ).show()
@@ -79,7 +78,7 @@ class InfoDetailEvent : TransformationAppCompatActivity() {
                     }
                     .addOnFailureListener {
                         Toast.makeText(
-                            this@InfoDetailEvent,
+                            this@InfoDetailEventActivity,
                             "error fetch user ${it.message}",
                             Toast.LENGTH_SHORT
                         ).show()

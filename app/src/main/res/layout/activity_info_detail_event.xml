@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_layout_gradient"
-    tools:context=".presentation.ui.detail.InfoDetailEvent">
+    tools:context=".presentation.ui.detail.InfoDetailEventActivity">
 
     <include
         android:id="@+id/tool_app_bar"

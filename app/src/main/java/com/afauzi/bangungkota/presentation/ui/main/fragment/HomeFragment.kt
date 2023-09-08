@@ -1,11 +1,7 @@
 package com.afauzi.bangungkota.presentation.ui.main.fragment
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,11 +10,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ComponentBottomSheetMorePostBinding
@@ -26,28 +20,19 @@ import com.afauzi.bangungkota.databinding.FragmentHomeBinding
 import com.afauzi.bangungkota.domain.model.Event
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingEvent
 import com.afauzi.bangungkota.presentation.ui.auth.SignInActivity
-import com.afauzi.bangungkota.presentation.ui.detail.InfoDetailEvent
+import com.afauzi.bangungkota.presentation.ui.detail.InfoDetailEventActivity
 import com.afauzi.bangungkota.presentation.ui.event.CreateEventActivity
-import com.afauzi.bangungkota.presentation.viewmodels.AuthViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.EventViewModel
-import com.afauzi.bangungkota.utils.CustomViews
 import com.afauzi.bangungkota.utils.CustomViews.toast
-import com.afauzi.bangungkota.utils.UtilityLibrary
 import com.afauzi.bangungkota.utils.UtilityLibrary.currentDate
 import com.afauzi.bangungkota.utils.UtilityLibrary.imageGlideForCircle
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.skydoves.transformationlayout.TransformationCompat
 import com.skydoves.transformationlayout.TransformationLayout
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
@@ -190,7 +175,7 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
     }
 
     override fun onClickItemDetail(data: Event, transformLayoutItem: TransformationLayout) {
-        val intent = Intent(requireActivity(), InfoDetailEvent::class.java)
+        val intent = Intent(requireActivity(), InfoDetailEventActivity::class.java)
         intent.putExtra("event_data", data) // Mengirim objek Event sebagai extra
         TransformationCompat.startActivity(transformLayoutItem, intent)
     }

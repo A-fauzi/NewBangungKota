@@ -17,7 +17,7 @@ import com.afauzi.bangungkota.databinding.ComponentListCommunityPostBinding
 import com.afauzi.bangungkota.databinding.FragmentCommunityBinding
 import com.afauzi.bangungkota.domain.model.Post
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingPost
-import com.afauzi.bangungkota.presentation.ui.detail.DetailPostActivity
+import com.afauzi.bangungkota.presentation.ui.detail.InfoDetailPostActivity
 import com.afauzi.bangungkota.presentation.ui.camera.CameraStoryActivity
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
@@ -163,7 +163,7 @@ class CommunityFragment : Fragment() {
         }
 
         componentListCommunityPostBinding.btnComment.setOnClickListener {
-            val intent = Intent(requireActivity(), DetailPostActivity::class.java)
+            val intent = Intent(requireActivity(), InfoDetailPostActivity::class.java)
             intent.putExtra("post_data", post) // Mengirim objek Post sebagai extra
             startActivity(intent)
         }
