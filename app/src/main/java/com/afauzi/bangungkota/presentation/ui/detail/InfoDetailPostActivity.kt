@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
@@ -76,6 +77,13 @@ class InfoDetailPostActivity : AppCompatActivity() {
             inputMethodManager.showSoftInput( editTextView, InputMethodManager.SHOW_IMPLICIT)
         } else {
             inputMethodManager.hideSoftInputFromWindow(editTextView.windowToken, 0)
+        }
+
+        inputCommentMessageLayout.setEndIconOnClickListener {
+            Toast.makeText(this, "post send", Toast.LENGTH_SHORT).show()
+
+            inputMethodManager.hideSoftInputFromWindow(editTextView.windowToken, 0)
+            editTextView.text.clear()
         }
     }
 
