@@ -94,35 +94,43 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
             binding.itemPost.tvTextPost.text = post.text
 
-            inputCommentMessageLayout.setEndIconOnClickListener {
-
-                val data = Post.ReplyPost(
-                    id = generateUniqueId(),
-                    postId = post.id,
-                    userId = user?.uid,
-                    text = inputCommentMessageEdiText.text.toString().trim(),
-
-                )
-                
-                postReplyViewModel.createPost(data, data.id.toString())
-                    .addOnCompleteListener { 
-                        if (it.isSuccessful) {
-                            Toast.makeText(this, "success reply 🙌", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(this, "reply not send", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "error ${it.message}", Toast.LENGTH_SHORT).show()
-                    }
-
-                inputBehaviour(inputCommentMessageEdiText, false)
-                inputCommentMessageEdiText.text.clear()
-            }
+            onClickMessageReply(post)
 
         } else {
             // if data null
         }
+    }
+
+    private fun onClickMessageReply(post: Post) {
+        inputCommentMessageLayout.setEndIconOnClickListener {
+
+            viewModels(post)
+
+            inputBehaviour(inputCommentMessageEdiText, false)
+            inputCommentMessageEdiText.text.clear()
+        }
+    }
+
+    private fun viewModels(post: Post) {
+        val data = Post.ReplyPost(
+            id = generateUniqueId(),
+            postId = post.id,
+            userId = user?.uid,
+            text = inputCommentMessageEdiText.text.toString().trim(),
+
+            )
+
+        postReplyViewModel.createPost(data, data.id.toString())
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Toast.makeText(this, "success reply 🙌", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "reply not send", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "error ${it.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun userDetailPostLiveData(post: Post) {
