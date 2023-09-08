@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
 import kotlinx.parcelize.Parcelize
+import java.sql.Time
 import java.util.Date
 
 @Parcelize
@@ -21,6 +22,6 @@ data class Post(
         val postId: String? = null,
         val userId: String? = null,
         val text: String? = null,
-        val created_at: String? = null
+        val created_at: Timestamp = Timestamp.now()
     )
 }

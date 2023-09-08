@@ -12,8 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityDetailPostBinding
 import com.afauzi.bangungkota.domain.model.Post
+import com.afauzi.bangungkota.presentation.viewmodels.PostReplyViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
+import com.afauzi.bangungkota.utils.UniqueIdGenerator
+import com.afauzi.bangungkota.utils.UniqueIdGenerator.generateUniqueId
 import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -35,6 +38,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
     private val userViewModel: UserViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
+    private val postReplyViewModel: PostReplyViewModel by viewModels()
 
     private fun init() {
         auth = FirebaseAuth.getInstance()
@@ -66,12 +70,6 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
         // show if start activity
         inputBehaviour(inputCommentMessageEdiText, true)
-
-        inputCommentMessageLayout.setEndIconOnClickListener {
-            Toast.makeText(this, "post send", Toast.LENGTH_SHORT).show()
-            inputBehaviour(inputCommentMessageEdiText, false)
-            inputCommentMessageEdiText.text.clear()
-        }
     }
 
     private fun inputBehaviour(editTextView: EditText, isShowing: Boolean) {
@@ -95,6 +93,32 @@ class InfoDetailPostActivity : AppCompatActivity() {
             userDetailPostLiveData(post)
 
             binding.itemPost.tvTextPost.text = post.text
+
+            inputCommentMessageLayout.setEndIconOnClickListener {
+
+                val data = Post.ReplyPost(
+                    id = generateUniqueId(),
+                    postId = post.id,
+                    userId = user?.uid,
+                    text = inputCommentMessageEdiText.text.toString().trim(),
+
+                )
+                
+                postReplyViewModel.createPost(data, data.id.toString())
+                    .addOnCompleteListener { 
+                        if (it.isSuccessful) {
+                            Toast.makeText(this, "success reply 🙌", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this, "reply not send", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "error ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
+
+                inputBehaviour(inputCommentMessageEdiText, false)
+                inputCommentMessageEdiText.text.clear()
+            }
 
         } else {
             // if data null
