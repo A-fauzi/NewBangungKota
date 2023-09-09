@@ -11,7 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class UserViewModel @Inject constructor(private val userRepository: UserRepository): ViewModel() {
+class UserViewModel @Inject constructor(private val userRepository: UserRepository) : ViewModel() {
 
     private val _user = MutableLiveData<User>()
     val userLiveData: LiveData<User> get() = _user

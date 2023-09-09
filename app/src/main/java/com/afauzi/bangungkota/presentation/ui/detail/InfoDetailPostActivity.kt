@@ -52,6 +52,26 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
         adapterPagingReplyPost = AdapterPagingReplyPost {viewBind, dataReply ->
 
+            viewBind.replyPostParent.tvTextPost.text = dataReply.text
+
+            lifecycleScope.launch {
+                userViewModel.getUserById(dataReply.userId.toString())
+                    .addOnSuccessListener {
+                        if (it.exists()) {
+                            Glide.with(this@InfoDetailPostActivity)
+                                .load(it.getString("photo"))
+                                .into(viewBind.replyPostParent.itemIvProfile)
+
+                            viewBind.replyPostParent.itemNameUser.text = it.getString("name")
+                        } else {
+
+                        }
+                    }
+                    .addOnFailureListener {
+
+                    }
+            }
+
         }
 
     }
@@ -147,7 +167,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
         postReplyViewModel.createPostReply(data, data.id.toString())
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Toast.makeText(this, "success reply 🙌", Toast.LENGTH_SHORT).show()
+                    adapterPagingReplyPost.refresh()
                 } else {
                     Toast.makeText(this, "reply not send", Toast.LENGTH_SHORT).show()
                 }
