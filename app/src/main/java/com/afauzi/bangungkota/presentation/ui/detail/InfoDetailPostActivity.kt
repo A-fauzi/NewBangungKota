@@ -72,6 +72,16 @@ class InfoDetailPostActivity : AppCompatActivity() {
         thisActivityBehaviour()
 
         setDetailDataPost { post ->
+
+            if (post.uid.toString() != user?.uid.toString()) binding.itemPost.btnMorePost.isVisible = false
+
+            // Get user live data
+            userDetailPostLiveData(post.uid.toString())
+
+            binding.itemPost.tvTextPost.text = post.text
+
+            onClickMessageReply(post)
+
             lifecycleScope.launch {
                 postReplyViewModel.getReplyPost(post.id).collectLatest { pagingData ->
                     adapterPagingReplyPost.submitData(pagingData)
@@ -141,17 +151,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
         val post = intent.getParcelableExtra("post_data") as? Post
 
         if (post != null) {
-
             postData(post)
-
-
-            // Get user live data
-            userDetailPostLiveData(post.uid.toString())
-
-            binding.itemPost.tvTextPost.text = post.text
-
-            onClickMessageReply(post)
-
         } else {
             // if data null
         }
