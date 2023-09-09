@@ -2,12 +2,14 @@ package com.afauzi.bangungkota.data.repository.event
 
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.afauzi.bangungkota.data.remote.firebase.FireStorageManager
 import com.afauzi.bangungkota.data.remote.firebase.FireStoreManager
 import com.afauzi.bangungkota.domain.model.Event
+import com.afauzi.bangungkota.domain.state.ResponseState
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -74,8 +76,38 @@ class EventRepositoryImpl : EventRepository {
     }
 
 
-    override suspend fun getEvent(documentId: String): Task<DocumentSnapshot> {
-        TODO("Not yet implemented")
+    override suspend fun getEvent(documentId: String): MutableLiveData<ResponseState<Event>> {
+        val getEventLiveData: MutableLiveData<ResponseState<Event>> = MutableLiveData()
+        fireStoreManager.getData(documentId)
+            .addOnSuccessListener {
+                if (it.exists()) {
+                    if (it.getTimestamp("createdAt") != null && it.getTimestamp("updatedAt") != null) {
+                        val event = Event(
+                            id = it.getString("id"),
+                            title = it.getString("title").toString(),
+                            description = it.getString("description").toString(),
+                            address = it.getString("address").toString(),
+                            image = it.getString("image").toString(),
+                            date = it.getString("date").toString(),
+                            time = it.getString("time").toString(),
+                            createdAt = it.getTimestamp("createdAt")!!,
+                            updatedAt = it.getTimestamp("updatedAt")!!,
+                            createdBy = it.getString("createdBy").toString()
+                        )
+
+                        getEventLiveData.value = ResponseState.Success(event)
+                    } else {
+                        getEventLiveData.value = ResponseState.Error("data timestamp error")
+                    }
+                } else {
+                    getEventLiveData.value = ResponseState.Error("Data Event Not Exists")
+                }
+            }
+            .addOnFailureListener {
+                getEventLiveData.value = ResponseState.Error(it.message.toString())
+            }
+
+        return getEventLiveData
     }
 
     override fun updateEvent(documentId: String, data: Event): Task<Void> {

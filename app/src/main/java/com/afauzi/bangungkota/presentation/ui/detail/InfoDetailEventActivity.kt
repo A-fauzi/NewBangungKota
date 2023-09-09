@@ -7,6 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityInfoDetailEventBinding
 import com.afauzi.bangungkota.domain.model.Event
+import com.afauzi.bangungkota.domain.state.ResponseState
+import com.afauzi.bangungkota.presentation.viewmodels.EventViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -24,29 +26,39 @@ class InfoDetailEventActivity : TransformationAppCompatActivity() {
     private var user: FirebaseUser? = null
 
     private val userViewModel: UserViewModel by viewModels()
+    private val eventViewModel: EventViewModel by viewModels()
+
+    private fun init() {
+        auth = FirebaseAuth.getInstance()
+        user = auth.currentUser
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInfoDetailEventBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        init()
+
         binding.toolAppBar.topAppBar.title = "Event Detal ✨"
         binding.toolAppBar.topAppBar.menu.findItem(R.id.user).isVisible = false
-
-        auth = FirebaseAuth.getInstance()
-        user = auth.currentUser
 
         binding.toolAppBar.topAppBar.setNavigationOnClickListener {
             onBackPressed()
         }
 
-        val receivedData = intent.getParcelableExtra("event_data") as? Event
-        if (receivedData != null) {
+        receivedDataAndSetView()
+    }
 
-            getEventSizeByUid(receivedData.createdBy)
+    private fun receivedDataAndSetView() {
 
+        // Received Data Intent
+        val receivedDataEvent = intent.getParcelableExtra("event_data") as? Event
+        if (receivedDataEvent != null) {
+
+            // Get data user by id
             lifecycleScope.launch {
-                userViewModel.getUserById(receivedData.createdBy)
+                userViewModel.getUserById(receivedDataEvent.createdBy)
                     .addOnSuccessListener {
                         if (it.exists()) {
 
@@ -58,20 +70,12 @@ class InfoDetailEventActivity : TransformationAppCompatActivity() {
 
                             binding.tvUsername.text = it.getString("name")
                             binding.tvUserEmail.text = it.getString("email")
-                            binding.tvUserAddress.text = receivedData.address
-                            Glide.with(this@InfoDetailEventActivity)
-                                .load(receivedData.image)
-                                .placeholder(R.drawable.image_profile_place_holder)
-                                .error(R.drawable.image_error)
-                                .into(binding.ivEvent)
-                            binding.tvTitleEvent.text = receivedData.title
-                            binding.tvDateEvent.text = receivedData.date
-                            binding.tvDescEvent.text = receivedData.description
+
 
                         } else {
                             Toast.makeText(
                                 this@InfoDetailEventActivity,
-                                "Data tidak ditemukan!",
+                                "Data user tidak ditemukan!",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -85,11 +89,31 @@ class InfoDetailEventActivity : TransformationAppCompatActivity() {
                     }
             }
 
+            // Get count user create event
+            userCreateEventSize(receivedDataEvent.createdBy)
+
+            // Set data event to views
+            binding.tvUserAddress.text = receivedDataEvent.address
+            Glide.with(this@InfoDetailEventActivity)
+                .load(receivedDataEvent.image)
+                .placeholder(R.drawable.image_profile_place_holder)
+                .error(R.drawable.image_error)
+                .into(binding.ivEvent)
+            binding.tvTitleEvent.text = receivedDataEvent.title
+            binding.tvDateEvent.text = receivedDataEvent.date
+            binding.tvDescEvent.text = receivedDataEvent.description
+
+        } else {
+            Toast.makeText(
+                this@InfoDetailEventActivity,
+                "Received data is null!",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
 
-    fun getEventSizeByUid(uid: String) {
+    private fun userCreateEventSize(uid: String) {
         // Initialize Firestore
         val db = FirebaseFirestore.getInstance()
 

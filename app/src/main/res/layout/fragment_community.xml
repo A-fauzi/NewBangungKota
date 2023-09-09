@@ -294,35 +294,52 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/outline_textfield_product_spec"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_16"
-                android:layout_marginEnd="@dimen/margin_8"
-                android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
-                app:boxCornerRadiusBottomEnd="15dp"
-                app:boxCornerRadiusBottomStart="15dp"
-                app:boxCornerRadiusTopEnd="15dp"
-                app:boxCornerRadiusTopStart="15dp"
-                app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="0dp"
-                app:endIconDrawable="@drawable/ic_paper_plane_top"
-                app:endIconMode="custom"
-                app:endIconTint="@color/purple_700"
-                app:hintEnabled="false">
+                android:layout_marginEnd="@dimen/margin_8">
 
+                <ImageButton
+                    android:id="@+id/btn_upload_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_upload_alt"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:padding="16dp"/>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_post_text"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/outline_textfield_product_spec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top"
-                    android:hint="Write post..."
-                    android:inputType="text|textMultiLine"
-                    android:padding="16dp" />
+                    android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
+                    app:boxCornerRadiusBottomEnd="15dp"
+                    app:boxCornerRadiusBottomStart="15dp"
+                    app:boxCornerRadiusTopEnd="15dp"
+                    app:boxCornerRadiusTopStart="15dp"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:endIconDrawable="@drawable/ic_paper_plane_top"
+                    app:endIconMode="custom"
+                    app:endIconTint="@color/purple_700"
+                    app:hintEnabled="false"
+                    android:layout_toStartOf="@id/btn_upload_image">
 
-            </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_post_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:hint="Write post..."
+                        android:inputType="text|textMultiLine"
+                        android:padding="16dp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
