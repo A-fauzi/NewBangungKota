@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -22,6 +23,7 @@ import com.afauzi.bangungkota.presentation.ui.detail.InfoDetailPostActivity
 import com.afauzi.bangungkota.presentation.ui.camera.CameraStoryActivity
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
+import com.afauzi.bangungkota.utils.CustomViews
 import com.afauzi.bangungkota.utils.CustomViews.toast
 import com.afauzi.bangungkota.utils.UniqueIdGenerator.generateUniqueId
 import com.bumptech.glide.Glide
@@ -227,7 +229,13 @@ class CommunityFragment : Fragment() {
 
     private fun onClickViews() {
         // WHEN BUTTON END ICON POSTING MESSAGE ONCLICK
-        binding.outlineTextfieldProductSpec.setEndIconOnClickListener { insertDataPost() }
+        binding.outlineTextfieldProductSpec.setEndIconOnClickListener {
+            val circularProgressDrawable = CustomViews.circularDrawableToLoadInput(requireActivity())
+            binding.outlineTextfieldProductSpec.endIconDrawable = circularProgressDrawable
+            circularProgressDrawable.start()
+
+            insertDataPost()
+        }
 
         // button top scroll
         binding.fabUpScroll.setOnClickListener { binding.nestedScrollView.smoothScrollTo(0, 0) }
@@ -252,14 +260,18 @@ class CommunityFragment : Fragment() {
                     adapterPagingPost.refresh()
                     binding.outlineTextfieldProductSpec.isEnabled = true
                     binding.etPostText.text?.clear()
+
+                    binding.outlineTextfieldProductSpec.endIconDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.ic_paper_plane_top)
                 } else {
                     binding.outlineTextfieldProductSpec.isEnabled = true
                     toast(requireActivity(), "Gagal posting")
+                    binding.outlineTextfieldProductSpec.endIconDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.ic_paper_plane_top)
                 }
             }
             .addOnFailureListener {
                 binding.outlineTextfieldProductSpec.isEnabled = true
                 toast(requireActivity(), "Error Posting ${it.message}")
+                binding.outlineTextfieldProductSpec.endIconDrawable = ContextCompat.getDrawable(requireActivity(), R.drawable.ic_paper_plane_top)
             }
     }
 }
