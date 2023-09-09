@@ -8,15 +8,21 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityDetailPostBinding
+import com.afauzi.bangungkota.databinding.ComponentListReplyPostBinding
 import com.afauzi.bangungkota.domain.model.Post
 import com.afauzi.bangungkota.presentation.adapter.AdapterPagingReplyPost
 import com.afauzi.bangungkota.presentation.viewmodels.PostReplyViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
+import com.afauzi.bangungkota.utils.CustomViews
+import com.afauzi.bangungkota.utils.CustomViews.circularDrawableToLoadInput
 import com.afauzi.bangungkota.utils.UniqueIdGenerator.generateUniqueId
 import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
@@ -51,27 +57,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
         inputCommentMessageEdiText = binding.inputReply.etPostComment
 
         adapterPagingReplyPost = AdapterPagingReplyPost {viewBind, dataReply ->
-
-            viewBind.replyPostParent.tvTextPost.text = dataReply.text
-
-            lifecycleScope.launch {
-                userViewModel.getUserById(dataReply.userId.toString())
-                    .addOnSuccessListener {
-                        if (it.exists()) {
-                            Glide.with(this@InfoDetailPostActivity)
-                                .load(it.getString("photo"))
-                                .into(viewBind.replyPostParent.itemIvProfile)
-
-                            viewBind.replyPostParent.itemNameUser.text = it.getString("name")
-                        } else {
-
-                        }
-                    }
-                    .addOnFailureListener {
-
-                    }
-            }
-
+            getUserReplyAndSetDataBinding(dataReply, viewBind)
         }
 
     }
@@ -98,6 +84,32 @@ class InfoDetailPostActivity : AppCompatActivity() {
             adapter = adapterPagingReplyPost
         }
 
+    }
+
+    private fun getUserReplyAndSetDataBinding(
+        dataReply: Post.ReplyPost,
+        viewBind: ComponentListReplyPostBinding
+    ) {
+
+        viewBind.replyPostParent.tvTextPost.text = dataReply.text
+
+        lifecycleScope.launch {
+            userViewModel.getUserById(dataReply.userId.toString())
+                .addOnSuccessListener {
+                    if (it.exists()) {
+                        Glide.with(this@InfoDetailPostActivity)
+                            .load(it.getString("photo"))
+                            .into(viewBind.replyPostParent.itemIvProfile)
+
+                        viewBind.replyPostParent.itemNameUser.text = it.getString("name")
+                    } else {
+
+                    }
+                }
+                .addOnFailureListener {
+
+                }
+        }
     }
 
     private fun thisActivityBehaviour() {
@@ -147,6 +159,9 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
     private fun onClickMessageReply(post: Post) {
         inputCommentMessageLayout.setEndIconOnClickListener {
+            val circularProgressDrawable = circularDrawableToLoadInput(this)
+            inputCommentMessageLayout.endIconDrawable = circularProgressDrawable
+            circularProgressDrawable.start()
 
             viewModels(post)
 
@@ -168,12 +183,16 @@ class InfoDetailPostActivity : AppCompatActivity() {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     adapterPagingReplyPost.refresh()
+
+                    inputCommentMessageLayout.endIconDrawable = ContextCompat.getDrawable(this, R.drawable.ic_paper_plane_top)
                 } else {
                     Toast.makeText(this, "reply not send", Toast.LENGTH_SHORT).show()
+                    inputCommentMessageLayout.endIconDrawable = ContextCompat.getDrawable(this, R.drawable.ic_paper_plane_top)
                 }
             }
             .addOnFailureListener {
                 Toast.makeText(this, "error ${it.message}", Toast.LENGTH_SHORT).show()
+                inputCommentMessageLayout.endIconDrawable = ContextCompat.getDrawable(this, R.drawable.ic_paper_plane_top)
             }
     }
 
