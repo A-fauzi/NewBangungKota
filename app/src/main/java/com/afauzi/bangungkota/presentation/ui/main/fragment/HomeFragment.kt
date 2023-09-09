@@ -142,6 +142,7 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
         val imageView = headerView.findViewById<ImageView>(R.id.iv_profile_header)
         val username = headerView.findViewById<TextView>(R.id.tv_name_user_drawer_header)
         val email = headerView.findViewById<TextView>(R.id.tv_email_user_drawer_header)
+
         username.text = user?.displayName
         email.text = user?.email
         Glide.with(requireActivity())

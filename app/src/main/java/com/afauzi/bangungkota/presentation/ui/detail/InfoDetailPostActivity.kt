@@ -9,19 +9,21 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.afauzi.bangungkota.R
 import com.afauzi.bangungkota.databinding.ActivityDetailPostBinding
 import com.afauzi.bangungkota.domain.model.Post
+import com.afauzi.bangungkota.presentation.adapter.AdapterPagingReplyPost
 import com.afauzi.bangungkota.presentation.viewmodels.PostReplyViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.PostViewModel
 import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
-import com.afauzi.bangungkota.utils.UniqueIdGenerator
 import com.afauzi.bangungkota.utils.UniqueIdGenerator.generateUniqueId
 import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -33,6 +35,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var inputCommentMessageLayout: TextInputLayout
     private lateinit var inputCommentMessageEdiText: EditText
+    private lateinit var adapterPagingReplyPost: AdapterPagingReplyPost
 
     private var user: FirebaseUser? = null
 
@@ -46,6 +49,11 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
         inputCommentMessageLayout = binding.inputReply.outlineTextfieldCommentMessage
         inputCommentMessageEdiText = binding.inputReply.etPostComment
+
+        adapterPagingReplyPost = AdapterPagingReplyPost {viewBind, dataReply ->
+
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,8 +62,21 @@ class InfoDetailPostActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         init()
-        setDetailDataPost()
+
         thisActivityBehaviour()
+
+        setDetailDataPost { post ->
+            lifecycleScope.launch {
+                postReplyViewModel.getReplyPost(post.id).collectLatest { pagingData ->
+                    adapterPagingReplyPost.submitData(pagingData)
+                }
+            }
+        }
+
+        binding.rvReply.apply {
+            layoutManager = LinearLayoutManager(this@InfoDetailPostActivity, LinearLayoutManager.VERTICAL, false)
+            adapter = adapterPagingReplyPost
+        }
 
     }
 
@@ -84,13 +105,16 @@ class InfoDetailPostActivity : AppCompatActivity() {
         }
     }
 
-    private fun setDetailDataPost() {
+    private fun setDetailDataPost(postData: (Post) -> Unit) {
         val post = intent.getParcelableExtra("post_data") as? Post
 
         if (post != null) {
 
+            postData(post)
+
+
             // Get user live data
-            userDetailPostLiveData(post)
+            userDetailPostLiveData(post.uid.toString())
 
             binding.itemPost.tvTextPost.text = post.text
 
@@ -120,7 +144,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
             )
 
-        postReplyViewModel.createPost(data, data.id.toString())
+        postReplyViewModel.createPostReply(data, data.id.toString())
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     Toast.makeText(this, "success reply 🙌", Toast.LENGTH_SHORT).show()
@@ -133,7 +157,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
             }
     }
 
-    private fun userDetailPostLiveData(post: Post) {
+    private fun userDetailPostLiveData(uid: String) {
         lifecycleScope.launch {
             userViewModel.userLiveData.observe(this@InfoDetailPostActivity) {
                 Glide.with(this@InfoDetailPostActivity)
@@ -145,7 +169,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
                 binding.itemPost.itemNameUser.text = it.name
                 binding.itemPost.itemEmailUser.text = it.email
             }
-            userViewModel.getUserByIdLiveData(post.uid.toString())
+            userViewModel.getUserByIdLiveData(uid)
         }
     }
 }

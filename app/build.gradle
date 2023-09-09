@@ -138,6 +138,8 @@ dependencies {
     implementation "androidx.camera:camera-view:${camerax_version}"
     implementation "androidx.camera:camera-extensions:${camerax_version}"
 
+    // smoothBottomBar
+    implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.9'
 
 }
 
