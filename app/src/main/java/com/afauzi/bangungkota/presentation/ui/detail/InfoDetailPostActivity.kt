@@ -24,6 +24,8 @@ import com.afauzi.bangungkota.presentation.viewmodels.UserViewModel
 import com.afauzi.bangungkota.utils.CustomViews
 import com.afauzi.bangungkota.utils.CustomViews.circularDrawableToLoadInput
 import com.afauzi.bangungkota.utils.UniqueIdGenerator.generateUniqueId
+import com.afauzi.bangungkota.utils.UtilityLibrary
+import com.afauzi.bangungkota.utils.UtilityLibrary.formatedDateToTimeAgo
 import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -79,6 +81,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
             userDetailPostLiveData(post.uid.toString())
 
             binding.itemPost.tvTextPost.text = post.text
+            binding.itemPost.itemDatePost.text = formatedDateToTimeAgo(post.created_at)
 
             onClickMessageReply(post)
 
@@ -206,7 +209,6 @@ class InfoDetailPostActivity : AppCompatActivity() {
                     .into(binding.itemPost.itemIvProfile)
 
                 binding.itemPost.itemNameUser.text = it.name
-                binding.itemPost.itemDatePost.text = it.email // nanti ganti dengan view yang sesuai, ini untuk sementara
             }
             userViewModel.getUserByIdLiveData(uid)
         }

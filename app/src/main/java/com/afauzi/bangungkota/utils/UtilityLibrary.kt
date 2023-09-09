@@ -61,4 +61,32 @@ object UtilityLibrary {
 
         return dateFormat.format(date)
     }
+
+    // Fungsi untuk mengonversi selisih waktu menjadi string yang sesuai
+    private fun getTimeAgo(timeDifferenceSeconds: Long): String {
+        val absTimeDifference = kotlin.math.abs(timeDifferenceSeconds)
+        return when {
+            absTimeDifference < 60 -> "$absTimeDifference detik yang lalu"
+            absTimeDifference < 3600 -> "${absTimeDifference / 60} menit yang lalu"
+            absTimeDifference < 86400 -> "${absTimeDifference / 3600} jam yang lalu"
+            absTimeDifference < 2592000 -> "${absTimeDifference / 86400} hari yang lalu"
+            absTimeDifference < 31536000 -> "${absTimeDifference / 2592000} bulan yang lalu"
+            else -> "${absTimeDifference / 31536000} tahun yang lalu"
+        }
+    }
+
+    fun formatedDateToTimeAgo(dataDate: String?): String {
+
+        // Parsa string menjadi objek Date menggunakan SimpleDateFormat
+        val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm:ss", Locale.getDefault())
+        val date = dataDate?.let { it1 -> dateFormat.parse(it1) }
+
+        // Hitung selisih waktu dengan waktu saat ini
+        val currentTime = Calendar.getInstance().time
+        val timeDifferenceMillis = currentTime.time - (date?.time ?: 0)
+        val timeDifferenceSeconds = timeDifferenceMillis / 1000
+        // Menggunakan fungsi getTimeAgo untuk mendapatkan hasil akhir
+
+        return getTimeAgo(timeDifferenceSeconds)
+    }
 }
