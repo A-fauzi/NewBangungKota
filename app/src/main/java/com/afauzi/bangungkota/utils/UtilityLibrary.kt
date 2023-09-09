@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,5 +47,18 @@ object UtilityLibrary {
         val currentTime = Calendar.getInstance().time
         val desiredFormat = SimpleDateFormat("EEEE, d MMMM", Locale.ENGLISH)
         return desiredFormat.format(currentTime)
+    }
+
+    fun timeStamp(): String {
+        // Timestamp yang akan diubah ke dalam bentuk string
+        val timestamp = Timestamp.now()
+
+// Konversi Timestamp ke Date
+        val date = timestamp.toDate()
+
+// Format tanggal ke dalam string dengan menggunakan SimpleDateFormat
+        val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm:ss", Locale.getDefault())
+
+        return dateFormat.format(date)
     }
 }

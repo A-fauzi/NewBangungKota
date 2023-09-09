@@ -206,7 +206,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
                     .into(binding.itemPost.itemIvProfile)
 
                 binding.itemPost.itemNameUser.text = it.name
-                binding.itemPost.itemEmailUser.text = it.email
+                binding.itemPost.itemDatePost.text = it.email // nanti ganti dengan view yang sesuai, ini untuk sementara
             }
             userViewModel.getUserByIdLiveData(uid)
         }

@@ -308,7 +308,8 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
-                    android:padding="16dp"/>
+                    android:padding="16dp"
+                    app:tint="@color/purple_700" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/outline_textfield_product_spec"
