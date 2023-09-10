@@ -59,6 +59,9 @@ class CommunityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.containerContent.visibility = View.GONE
+        binding.progressbar.visibility = View.VISIBLE
+
         setTopAppBar()
 
         auth = FirebaseAuth.getInstance()
@@ -207,8 +210,7 @@ class CommunityFragment : Fragment() {
 
                 if (isLoading) {
 
-                    binding.containerContent.visibility = View.GONE
-                    binding.progressbar.visibility = View.VISIBLE
+                    // Is Load data paging
 
                 } else {
 
