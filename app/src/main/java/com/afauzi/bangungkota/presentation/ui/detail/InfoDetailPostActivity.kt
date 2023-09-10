@@ -74,6 +74,9 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
             adapterPagingReplyPostChild = AdapterPagingReplyPost {viewChild, dataChild ->
                 viewChild.replyPostParent.tvTextPost.text = dataChild.text
+                viewChild.replyPostParent.btnComment.isVisible = false
+                viewChild.replyPostParent.btnShare.isVisible = false
+                viewChild.replyPostParent.tvShare.isVisible = false
 
                 lifecycleScope.launch {
                     userViewModel.getUserById(dataChild.userId.toString())
