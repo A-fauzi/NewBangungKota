@@ -19,6 +19,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/margin_8"
         android:layout_marginEnd="@dimen/margin_8"
+        app:prefixTextAppearance="@style/MyPrefixTextStyle"
         app:prefixTextColor="@color/purple_700"
         android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
         app:boxCornerRadiusBottomEnd="15dp"
