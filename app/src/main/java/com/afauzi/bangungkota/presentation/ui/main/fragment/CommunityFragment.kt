@@ -2,8 +2,6 @@ package com.afauzi.bangungkota.presentation.ui.main.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.DateUtils
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +29,7 @@ import com.afauzi.bangungkota.utils.UtilityLibrary.formatedDateToTimeAgo
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -42,6 +40,8 @@ class CommunityFragment : Fragment() {
 
     private lateinit var binding: FragmentCommunityBinding
     private lateinit var adapterPagingPost: AdapterPagingPost
+    private lateinit var auth: FirebaseAuth
+    private var user: FirebaseUser? = null
 
     private val postViewModel: PostViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
@@ -52,11 +52,6 @@ class CommunityFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentCommunityBinding.inflate(layoutInflater, container, false)
-
-        adapterPagingPost = AdapterPagingPost { componentListCommunityPostBinding, post ->
-            bindDataPostToViews(componentListCommunityPostBinding, post)
-        }
-
         return binding.root
     }
 
@@ -64,12 +59,21 @@ class CommunityFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setTopAppBar()
+
+        auth = FirebaseAuth.getInstance()
+        user = auth.currentUser
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        adapterPagingPost = AdapterPagingPost { componentListCommunityPostBinding, post ->
+            bindDataPostToViews(componentListCommunityPostBinding, post)
+        }
+
         onClickViews()
         setUpRecyclerViewAdapter()
-
-        binding.cvCameraStory.setOnClickListener {
-            startActivity(Intent(requireActivity(), CameraStoryActivity::class.java))
-        }
     }
 
     private fun bindDataPostToViews(
@@ -77,11 +81,26 @@ class CommunityFragment : Fragment() {
         post: Post
     ) {
 
+        setDataUserPostListToViews(post, componentListCommunityPostBinding)
+        setDataPostListToViews(post, componentListCommunityPostBinding)
+    }
+
+    private fun setDataUserPostListToViews(
+        post: Post,
+        componentListCommunityPostBinding: ComponentListCommunityPostBinding
+    ) {
         lifecycleScope.launch {
             userViewModel.getUserById(post.uid.toString())
                 .addOnSuccessListener {
                     if (it.exists()) {
-                        setDataListItem(post, componentListCommunityPostBinding, it)
+
+                        Glide.with(requireActivity())
+                            .load(it.getString("photo"))
+                            .error(R.drawable.example_profile)
+                            .into(componentListCommunityPostBinding.itemIvProfile)
+
+                        componentListCommunityPostBinding.itemNameUser.text = it.getString("name")
+
                     } else {
                         // tidak ada data uid di list
                     }
@@ -92,26 +111,16 @@ class CommunityFragment : Fragment() {
         }
     }
 
-    private fun setDataListItem(
+    private fun setDataPostListToViews(
         post: Post,
-        componentListCommunityPostBinding: ComponentListCommunityPostBinding,
-        it: DocumentSnapshot
+        componentListCommunityPostBinding: ComponentListCommunityPostBinding
     ) {
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
-        if (user?.uid != post.uid) componentListCommunityPostBinding.btnMorePost.visibility =
-            View.GONE
+
+        if (user?.uid != post.uid) componentListCommunityPostBinding.btnMorePost.visibility = View.GONE
 
 
-
-        componentListCommunityPostBinding.itemNameUser.text = it.getString("name")
         componentListCommunityPostBinding.tvTextPost.text = post.text
         componentListCommunityPostBinding.itemDatePost.text = formatedDateToTimeAgo(post.created_at)
-
-        Glide.with(requireActivity())
-            .load(it.getString("photo"))
-            .error(R.drawable.example_profile)
-            .into(componentListCommunityPostBinding.itemIvProfile)
 
 
         var isLoved = false
@@ -225,9 +234,6 @@ class CommunityFragment : Fragment() {
         binding.appBarLayout.topAppBar.title = "Community"
         binding.appBarLayout.topAppBar.menu.findItem(R.id.user).isVisible = false
         binding.appBarLayout.topAppBar.navigationIcon = null
-        binding.appBarLayout.topAppBar.setNavigationOnClickListener {
-            Toast.makeText(requireActivity(), "Menu Clicked", Toast.LENGTH_SHORT).show()
-        }
     }
 
 
@@ -243,11 +249,13 @@ class CommunityFragment : Fragment() {
 
         // button top scroll
         binding.fabUpScroll.setOnClickListener { binding.nestedScrollView.smoothScrollTo(0, 0) }
+
+        binding.cvCameraStory.setOnClickListener {
+            startActivity(Intent(requireActivity(), CameraStoryActivity::class.java))
+        }
     }
 
     private fun insertDataPost() {
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
 
         binding.outlineTextfieldProductSpec.isEnabled = false
         val textPost = binding.etPostText.text.toString()
