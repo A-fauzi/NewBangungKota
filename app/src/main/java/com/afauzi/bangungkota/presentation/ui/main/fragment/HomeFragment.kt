@@ -59,6 +59,9 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.containerContent.visibility = View.GONE
+        binding.progressbar.visibility = View.VISIBLE
+
         adapterPagingEvent = AdapterPagingEvent(requireActivity(), this)
 
         binding.rvEvent.apply {
@@ -94,10 +97,9 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
                 val isLoadingAppend = loadStates.append is LoadState.Loading
 
                 if (isLoading) {
-                    binding.rvEvent.visibility = View.GONE
-                    binding.progressbar.visibility = View.VISIBLE
+                    // data is load
                 } else {
-                    binding.rvEvent.visibility = View.VISIBLE
+                    binding.containerContent.visibility = View.VISIBLE
                     binding.progressbar.visibility = View.GONE
 
                     // CEK DATA AVAIL IN LIST
