@@ -15,21 +15,13 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         app:navGraph="@navigation/nav_graph_main"/>
 
-    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        app:cnb_menuResource="@menu/bottom_nav_menu"
-        app:menu="@menu/bottom_nav_menu"/>
-
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/bottomNav"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        app:menu="@menu/bottom_nav_menu"-->
-<!--        app:labelVisibilityMode="unlabeled"/>-->
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="unlabeled"/>
 
 </RelativeLayout>

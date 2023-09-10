@@ -2,10 +2,8 @@ package com.afauzi.bangungkota.presentation.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.widget.PopupMenu
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.afauzi.bangungkota.R
@@ -38,39 +36,6 @@ class MainActivity : AppCompatActivity() {
         // Temukan NavHostFragment dan dapatkan NavController
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         navController = navHostFragment.navController
-//        binding.bottomNav.setupWithNavController(navController)
-
-        binding.bottomNav.setItemSelected(R.id.homeFragmentMenu)
-        binding.bottomNav.setOnItemSelectedListener {
-            when(it) {
-                R.id.homeFragmentMenu -> {
-                    openMainFragment()
-                }
-                R.id.mapsFragmentMenu -> {
-                    val mapFragment = MapsFragment()
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, mapFragment).commit()
-
-                }
-                R.id.communityFragmentMenu -> {
-                    val communityFragment = CommunityFragment()
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, communityFragment).commit()
-
-                }
-                R.id.accountFragmentMenu -> {
-                    val accFragment = AccountFragment()
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, accFragment).commit()
-
-                }
-            }
-        }
-    }
-
-    private fun openMainFragment() {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, HomeFragment())
-        transaction.commit()
+        binding.bottomNav.setupWithNavController(navController)
     }
 }
