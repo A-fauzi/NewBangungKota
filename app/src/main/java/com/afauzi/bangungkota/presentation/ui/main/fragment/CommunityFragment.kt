@@ -1,5 +1,6 @@
 package com.afauzi.bangungkota.presentation.ui.main.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -205,11 +206,14 @@ class CommunityFragment : Fragment() {
                 val isLoadingAppend = loadStates.append is LoadState.Loading
 
                 if (isLoading) {
-//                    binding.rvEvent.visibility = View.GONE
-//                    binding.progressbar.visibility = View.VISIBLE
+
+                    binding.containerContent.visibility = View.GONE
+                    binding.progressbar.visibility = View.VISIBLE
+
                 } else {
-//                    binding.rvEvent.visibility = View.VISIBLE
-//                    binding.progressbar.visibility = View.GONE
+
+                    binding.containerContent.visibility = View.VISIBLE
+                    binding.progressbar.visibility = View.GONE
 
                     // CEK DATA AVAIL IN LIST
                     adapterPagingPost.loadStateFlow.distinctUntilChangedBy {
@@ -255,6 +259,7 @@ class CommunityFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun insertDataPost() {
 
         binding.outlineTextfieldProductSpec.isEnabled = false

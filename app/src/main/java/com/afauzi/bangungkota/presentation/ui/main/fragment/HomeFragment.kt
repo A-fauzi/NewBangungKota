@@ -60,16 +60,17 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
         super.onViewCreated(view, savedInstanceState)
 
         adapterPagingEvent = AdapterPagingEvent(requireActivity(), this)
-    }
-
-    override fun onStart() {
-        super.onStart()
 
         binding.rvEvent.apply {
             layoutManager =
                 LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             adapter = adapterPagingEvent
         }
+
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         setDataToViews()
         getEventList()
@@ -183,7 +184,6 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
         val intent = Intent(requireActivity(), InfoDetailEventActivity::class.java)
         intent.putExtra("event_data", data) // Mengirim objek Event sebagai extra
         TransformationCompat.startActivity(transformLayoutItem, intent)
-
     }
 
     override fun clickItemMore(data: Event) {

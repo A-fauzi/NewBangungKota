@@ -27,10 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-    }
-
-    override fun onStart() {
-        super.onStart()
 
         setUpNavigation()
     }
