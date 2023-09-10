@@ -69,7 +69,37 @@ class InfoDetailPostActivity : AppCompatActivity() {
         inputCommentMessageEdiText = binding.inputReply.etPostComment
 
         adapterPagingReplyPost = AdapterPagingReplyPost { viewBind, dataReply ->
+
             getUserReplyAndSetDataBinding(dataReply, viewBind)
+
+            adapterPagingReplyPostChild = AdapterPagingReplyPost {viewChild, dataChild ->
+                viewChild.replyPostParent.tvTextPost.text = dataChild.text
+
+                lifecycleScope.launch {
+                    userViewModel.getUserById(dataChild.userId.toString())
+                        .addOnSuccessListener {
+                            if (it.exists()) {
+                                Glide.with(this@InfoDetailPostActivity)
+                                    .load(it.getString("photo"))
+                                    .into(viewChild.replyPostParent.itemIvProfile)
+
+                                viewChild.replyPostParent.itemNameUser.text = it.getString("name")
+                            }
+                        }
+                        .addOnFailureListener {  }
+                }
+            }
+
+            lifecycleScope.launch {
+                postReplyViewModel.getReplyPostChild(dataReply.id.toString()).collectLatest {
+                    adapterPagingReplyPostChild.submitData(it)
+                }
+            }
+
+            viewBind.rvReplyPostChild.apply {
+                layoutManager = LinearLayoutManager(this@InfoDetailPostActivity, LinearLayoutManager.VERTICAL, false)
+                adapter = adapterPagingReplyPostChild
+            }
         }
 
     }
@@ -173,9 +203,10 @@ class InfoDetailPostActivity : AppCompatActivity() {
             if (endIconMode == END_ICON_MODE_SEND) {
                 if (isPrefix && inputCommentMessageEdiText.text.toString().isNotBlank())  {
                     createReplyPost("reply_post_child", postIdReplyParent) {
-                        adapterPagingReplyPostChild.refresh()
 
-                        toast(this, "success post child")
+                        adapterPagingReplyPostChild.refresh()
+                        inputCommentMessageLayout.endIconDrawable = ContextCompat.getDrawable(this, R.drawable.ic_paper_plane_top)
+
                     }
                 }
 

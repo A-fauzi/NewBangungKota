@@ -33,4 +33,16 @@ class PostReplyParentRepositoryImpl: PostReplyParentRepository<Post.ReplyPost> {
             PostReplyPagingSource(postId)
         }.flow
     }
+
+    override fun replyPostChildPagingSource(postId: String): Flow<PagingData<Post.ReplyPost>> {
+        val pagingConfig = PagingConfig(
+            pageSize = 10,
+            prefetchDistance = 3,
+            enablePlaceholders = false
+        )
+
+        return Pager(pagingConfig) {
+            PostReplyChildPagingSource(postId)
+        }.flow
+    }
 }
