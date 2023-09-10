@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 class PostReplyParentRepositoryImpl: PostReplyParentRepository<Post.ReplyPost> {
     private val db = FirebaseFirestore.getInstance()
 
-    override fun createPost(data: Post.ReplyPost, documentId: String): Task<Void> {
-        return db.collection("reply_post_parent")
+    override fun createPost(collection: String, data: Post.ReplyPost, documentId: String): Task<Void> {
+        return db.collection(collection)
             .document(documentId)
             .set(data)
     }

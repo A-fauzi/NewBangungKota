@@ -30,7 +30,6 @@ import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentSnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -49,7 +48,9 @@ class InfoDetailPostActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var inputCommentMessageLayout: TextInputLayout
     private lateinit var inputCommentMessageEdiText: EditText
+
     private lateinit var adapterPagingReplyPost: AdapterPagingReplyPost
+    private lateinit var adapterPagingReplyPostChild: AdapterPagingReplyPost
 
     private val userViewModel: UserViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
@@ -58,6 +59,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
     private var user: FirebaseUser? = null
     private var isPrefix: Boolean = false
     private var endIconMode: Int = 0
+    private var postIdReplyParent: String = ""
 
     private fun init() {
         auth = FirebaseAuth.getInstance()
@@ -83,7 +85,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
         setDetailDataPost { post ->
 
-            inputPrefixValidation(post)
+            sendReplyMessage(post)
 
 
             if (post.uid.toString() != user?.uid.toString()) binding.itemPost.btnMorePost.isVisible =
@@ -122,6 +124,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
         viewBind.replyPostParent.tvTextPost.text = dataReply.text
 
         lifecycleScope.launch {
+
             userViewModel.getUserById(dataReply.userId.toString())
                 .addOnSuccessListener { user ->
                     if (user.exists()) {
@@ -132,8 +135,11 @@ class InfoDetailPostActivity : AppCompatActivity() {
                         viewBind.replyPostParent.itemNameUser.text = user.getString("name")
 
                         viewBind.replyPostParent.btnComment.setOnClickListener {
+
                             isPrefix = true
                             inputCommentMessageLayout.prefixText = "@${user.getString("name")}"
+
+                            postIdReplyParent = dataReply.id.toString()
 
                             if (inputCommentMessageEdiText.text.toString().isBlank()) {
                                 endIconMode = END_ICON_MODE_CLEAR_PREFIX
@@ -143,6 +149,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
                                         R.drawable.cross_circle
                                     )
                             }
+
                         }
 
                     } else {
@@ -153,23 +160,32 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
                 }
         }
+
+
+
     }
 
-    private fun inputPrefixValidation(post: Post) {
+    private fun sendReplyMessage(post: Post) {
 
         // OnClick send message reply
         inputCommentMessageLayout.setEndIconOnClickListener {
 
             if (endIconMode == END_ICON_MODE_SEND) {
-                if (isPrefix && inputCommentMessageEdiText.text.toString().isNotBlank()) toast(
-                    this,
-                    "reply child"
-                )
+                if (isPrefix && inputCommentMessageEdiText.text.toString().isNotBlank())  {
+                    createReplyPost("reply_post_child", postIdReplyParent) {
+                        adapterPagingReplyPostChild.refresh()
+
+                        toast(this, "success post child")
+                    }
+                }
 
                 if (!isPrefix) {
 
                     if (inputCommentMessageEdiText.text.toString().isNotBlank()) {
-                        createReplyPost(post)
+                        createReplyPost("reply_post_parent", post.id) {
+                            adapterPagingReplyPost.refresh()
+                            inputCommentMessageLayout.endIconDrawable = ContextCompat.getDrawable(this, R.drawable.ic_paper_plane_top)
+                        }
                     } else {
                         toast(this, "minimal isi dulu 🤦‍♀️")
                     }
@@ -253,7 +269,7 @@ class InfoDetailPostActivity : AppCompatActivity() {
         }
     }
 
-    private fun createReplyPost(post: Post) {
+    private fun createReplyPost(collection: String, postIdParent: String, onSuccessCreate: () -> Unit) {
 
         val circularProgressDrawable = circularDrawableToLoadInput(this)
         inputCommentMessageLayout.endIconDrawable = circularProgressDrawable
@@ -261,19 +277,16 @@ class InfoDetailPostActivity : AppCompatActivity() {
 
         val data = Post.ReplyPost(
             id = generateUniqueId(),
-            postId = post.id,
+            postId = postIdParent,
             userId = user?.uid,
             text = inputCommentMessageEdiText.text.toString().trim(),
 
             )
 
-        postReplyViewModel.createPostReply(data, data.id.toString())
+        postReplyViewModel.createPostReply(collection, data, data.id.toString())
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    adapterPagingReplyPost.refresh()
-
-                    inputCommentMessageLayout.endIconDrawable =
-                        ContextCompat.getDrawable(this, R.drawable.ic_paper_plane_top)
+                    onSuccessCreate()
                 } else {
                     Toast.makeText(this, "reply not send", Toast.LENGTH_SHORT).show()
                     inputCommentMessageLayout.endIconDrawable =

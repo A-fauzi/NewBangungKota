@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface PostReplyParentRepository<T: Any> {
     fun replyPostPagingSource(postId: String): Flow<PagingData<T>>
-    fun createPost(data: Post.ReplyPost, documentId: String): Task<Void>
+    fun createPost(collection: String, data: Post.ReplyPost, documentId: String): Task<Void>
     fun deletePost(documentId: String): Task<Void>
 }

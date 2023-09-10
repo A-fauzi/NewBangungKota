@@ -19,8 +19,8 @@ class PostReplyViewModel @Inject constructor(
 
     fun getReplyPost(postId: String) = replyPostReplyParentRepository.replyPostPagingSource(postId).cachedIn(viewModelScope)
 
-    fun createPostReply(data: Post.ReplyPost, documentId: String): Task<Void> {
-        return replyPostReplyParentRepository.createPost(data, documentId)
+    fun createPostReply(collection: String, data: Post.ReplyPost, documentId: String): Task<Void> {
+        return replyPostReplyParentRepository.createPost(collection, data, documentId)
     }
 
 //    fun deletePost(documentId: String): Task<Void> {
