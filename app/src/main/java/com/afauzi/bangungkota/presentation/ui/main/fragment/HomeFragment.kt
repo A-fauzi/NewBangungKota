@@ -51,7 +51,7 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
-        adapterPagingEvent = AdapterPagingEvent(requireActivity(), this)
+
         return binding.root
     }
 
@@ -59,20 +59,26 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setDataToViews()
-        getEventList()
+        adapterPagingEvent = AdapterPagingEvent(requireActivity(), this)
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         binding.rvEvent.apply {
             layoutManager =
                 LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             adapter = adapterPagingEvent
         }
+
+        setDataToViews()
+        getEventList()
+
         binding.fabCreateEvent.setOnClickListener {
             val intent = Intent(requireActivity(), CreateEventActivity::class.java)
             TransformationCompat.startActivity(binding.transformLayout, intent)
         }
     }
-
 
     private fun getEventList() {
         lifecycleScope.launch {
@@ -170,8 +176,6 @@ class HomeFragment : Fragment(), AdapterPagingEvent.ListenerAdapterEvent {
         ) { bitmap ->
             binding.appBarLayout.topAppBar.menu.findItem(R.id.user).icon = bitmap
         }
-
-        binding.currentDate.text = currentDate()
 
     }
 
