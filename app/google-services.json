@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "470355599725",
+    "firebase_url": "https://bangun-kota-default-rtdb.firebaseio.com",
+    "project_id": "bangun-kota",
+    "storage_bucket": "bangun-kota.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470355599725:android:27a8ab2177327b2b153a64",
+        "android_client_info": {
+          "package_name": "com.afauzi.bangungkota"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "470355599725-fu0stkq6b7lri2c7m9ol6qmohjmkh7br.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.afauzi.bangungkota",
+            "certificate_hash": "4afc2528b2c0e9794418aa67d2801e5892cf33e5"
+          }
+        },
+        {
+          "client_id": "470355599725-n00mqdtaugkbfffeah89ancna0kp4cv1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChbCl3sRXwKssBPYoUziSa_tfWDsO-Fkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "470355599725-clm34dv0gaqr36kldcncrbeaosl96g74.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
